@@ -1,0 +1,86 @@
+### Logfit Backend API Tests
+
+### 환경 변수
+@baseUrl = http://localhost:8080/api
+
+###
+### 회원가입 API
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "john_doe",
+  "email": "john@example.com",
+  "password": "SecurePassword123",
+  "passwordConfirm": "SecurePassword123"
+}
+
+###
+### 회원가입 - 비밀번호 불일치 테스트
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "jane_doe",
+  "email": "jane@example.com",
+  "password": "SecurePassword123",
+  "passwordConfirm": "DifferentPassword"
+}
+
+###
+### 회원가입 - 중복 이메일 테스트
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "john_doe_2",
+  "email": "john@example.com",
+  "password": "SecurePassword123",
+  "passwordConfirm": "SecurePassword123"
+}
+
+###
+### 로그인 API
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "SecurePassword123"
+}
+
+###
+### 로그인 - 잘못된 비밀번호
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "WrongPassword"
+}
+
+###
+### 로그인 - 존재하지 않는 사용자
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "notexist@example.com",
+  "password": "SecurePassword123"
+}
+
+###
+### Refresh Token으로 새 Access Token 발급
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huQGV4YW1wbGUuY29tIiwidXNlcklkIjoxLCJpYXQiOjE3NDU5MzcyMjgsImV4cCI6MTc0Njg1NzIyOH0.xxxxxx"
+}
+
+###
+### 로그아웃 API
+POST {{baseUrl}}/auth/logout
+X-User-Id: 1
+Content-Type: application/json
+
