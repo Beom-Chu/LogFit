@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Pull Up</title>
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5d5c8" />
+      <stop offset="100%" stop-color="#e8b8ad" />
+    </linearGradient>
+    <linearGradient id="back" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e74c3c" />
+      <stop offset="100%" stop-color="#c0392b" />
+    </linearGradient>
+    <linearGradient id="arm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d35400" />
+      <stop offset="100%" stop-color="#b8860b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#f5f7fa" />
+  <!-- 바 -->
+  <rect x="250" y="130" width="700" height="22" rx="11" fill="#2a2a2a" />
+  <rect x="280" y="152" width="20" height="520" rx="10" fill="#64748b" />
+  <rect x="900" y="152" width="20" height="520" rx="10" fill="#64748b" />
+  <!-- 머리 -->
+  <circle cx="600" cy="280" r="50" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 상체 (당기는 자세) -->
+  <ellipse cx="600" cy="400" rx="130" ry="95" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 등 근육 (넓은등, 강조) -->
+  <path d="M 520 360 Q 480 400 520 450" fill="url(#back)" stroke="#b8270d" stroke-width="2" />
+  <path d="M 680 360 Q 720 400 680 450" fill="url(#back)" stroke="#b8270d" stroke-width="2" />
+  <ellipse cx="550" cy="400" rx="70" ry="85" fill="url(#back)" opacity="0.8" stroke="#c0392b" stroke-width="1.5" />
+  <ellipse cx="650" cy="400" rx="70" ry="85" fill="url(#back)" opacity="0.8" stroke="#c0392b" stroke-width="1.5" />
+  <!-- 목 -->
+  <rect x="570" y="320" width="60" height="50" rx="15" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 팔 (당긴 상태) -->
+  <line x1="480" y1="370" x2="280" y2="180" stroke="url(#arm)" stroke-width="34" stroke-linecap="round" />
+  <circle cx="280" cy="180" r="26" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <line x1="720" y1="370" x2="920" y2="180" stroke="url(#arm)" stroke-width="34" stroke-linecap="round" />
+  <circle cx="920" cy="180" r="26" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 다리 -->
+  <line x1="540" y1="490" x2="500" y2="680" stroke="url(#arm)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="500" cy="680" r="22" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <line x1="660" y1="490" x2="700" y2="680" stroke="url(#arm)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="700" cy="680" r="22" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 발 -->
+  <ellipse cx="500" cy="730" rx="28" ry="34" fill="#3a3a3a" />
+  <ellipse cx="700" cy="730" rx="28" ry="34" fill="#3a3a3a" />
+  <text x="600" y="120" text-anchor="middle" font-size="64" font-family="Arial, sans-serif" fill="#1a1a1a" font-weight="700">Pull Up</text>
+</svg>
+

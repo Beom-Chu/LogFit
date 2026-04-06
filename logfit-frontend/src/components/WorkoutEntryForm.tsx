@@ -27,6 +27,86 @@ function toDateKey(dateTime: string) {
   return `${y}-${m}-${d}`;
 }
 
+type ExercisePreview = {
+  imageUrl: string;
+  helperText: string;
+  matched: boolean;
+};
+
+const EXERCISE_IMAGE_BY_KEY: Record<string, string> = {
+  benchpress: '/exercises/benchpress.svg',
+  squat: '/exercises/squat.svg',
+  deadlift: '/exercises/deadlift.svg',
+  overheadpress: '/exercises/overhead-press.svg',
+  pullup: '/exercises/pull-up.svg',
+  barbellrow: '/exercises/barbell-row.svg',
+  lunge: '/exercises/lunge.svg',
+  legpress: '/exercises/leg-press.svg',
+};
+
+const EXERCISE_NAME_ALIASES: Record<string, string[]> = {
+  benchpress: ['벤치프레스', '벤치 프레스', 'benchpress', 'bench press'],
+  squat: ['스쿼트', 'squat'],
+  deadlift: ['데드리프트', 'deadlift', 'dead lift'],
+  overheadpress: ['오버헤드 프레스', '오버헤드프레스', 'overhead press', 'shoulder press'],
+  pullup: ['풀업', '턱걸이', 'pullup', 'pull up', 'chin up'],
+  barbellrow: ['바벨 로우', '바벨로우', '바벨로', 'barbell row', 'bent over row'],
+  lunge: ['런지', 'lunge'],
+  legpress: ['레그 프레스', '레그프레스', 'leg press'],
+};
+
+const FALLBACK_EXERCISE_IMAGE_URL = '/exercises/workout-default.svg';
+
+function normalizeExerciseName(name: string) {
+  return name.toLowerCase().replace(/\s+/g, '');
+}
+
+function resolveExerciseImage(name: string) {
+  const normalizedName = normalizeExerciseName(name);
+
+  for (const [key, aliases] of Object.entries(EXERCISE_NAME_ALIASES)) {
+    const matched = aliases.some((alias) => normalizeExerciseName(alias) === normalizedName);
+    if (matched) {
+      return EXERCISE_IMAGE_BY_KEY[key] || FALLBACK_EXERCISE_IMAGE_URL;
+    }
+  }
+
+  return FALLBACK_EXERCISE_IMAGE_URL;
+}
+
+function getExercisePreview(exercise?: ExerciseType): ExercisePreview {
+  if (!exercise) {
+    return {
+      imageUrl: FALLBACK_EXERCISE_IMAGE_URL,
+      helperText: '운동을 선택하면 해당 운동 이미지가 표시됩니다.',
+      matched: false,
+    };
+  }
+
+  if (!exercise.isDefault) {
+    return {
+      imageUrl: FALLBACK_EXERCISE_IMAGE_URL,
+      helperText: '내 운동 종류는 기본 이미지로 표시됩니다.',
+      matched: false,
+    };
+  }
+
+  const mappedImageUrl = resolveExerciseImage(exercise.name);
+  if (mappedImageUrl === FALLBACK_EXERCISE_IMAGE_URL) {
+    return {
+      imageUrl: FALLBACK_EXERCISE_IMAGE_URL,
+      helperText: '기본 운동 이미지를 찾지 못해 공통 동작 가이드를 표시합니다.',
+      matched: false,
+    };
+  }
+
+  return {
+    imageUrl: mappedImageUrl,
+    helperText: `${exercise.name} 추천 이미지`,
+    matched: true,
+  };
+}
+
 export default function WorkoutEntryForm() {
   const navigate = useNavigate();
   const { date: paramDate } = useParams<{ date?: string }>();
@@ -71,6 +151,11 @@ export default function WorkoutEntryForm() {
   const selectedExercise = useMemo(
     () => exerciseTypes.find((exercise) => exercise.id === selectedExerciseTypeId),
     [exerciseTypes, selectedExerciseTypeId]
+  );
+
+  const selectedExercisePreview = useMemo(
+    () => getExercisePreview(selectedExercise),
+    [selectedExercise]
   );
 
   const selectedExerciseSets = useMemo(() => {
@@ -328,6 +413,25 @@ export default function WorkoutEntryForm() {
                 onChange={(e) => setSelectedDate(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
               />
+            </div>
+          </div>
+
+          <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden">
+            <img
+              src={selectedExercisePreview.imageUrl}
+              alt={selectedExercise ? `${selectedExercise.name} 참고 이미지` : '운동 참고 이미지'}
+              className="w-full h-56 object-cover"
+              loading="lazy"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.src = FALLBACK_EXERCISE_IMAGE_URL;
+              }}
+            />
+            <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
+              <p className="text-sm text-gray-700">{selectedExercisePreview.helperText}</p>
+              {selectedExercise?.isDefault && selectedExercisePreview.matched && (
+                <p className="text-xs text-green-600 mt-1">기본 운동과 일치하는 이미지를 표시 중입니다.</p>
+              )}
             </div>
           </div>
         </div>

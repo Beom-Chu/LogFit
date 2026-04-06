@@ -5,6 +5,8 @@ import {
   authLogout,
   getWeeklyWorkoutSummary,
   getWorkoutRecords,
+  getExerciseTypes,
+  ExerciseType,
   WorkoutRecordResponse,
 } from '../services/api';
 
@@ -36,12 +38,53 @@ function toDateKey(dateTime: string) {
   return `${y}-${m}-${d}`;
 }
 
+// Exercise image mapping 추가
+const EXERCISE_IMAGE_BY_KEY: Record<string, string> = {
+  benchpress: '/exercises/bench-press.svg',
+  squat: '/exercises/squat.svg',
+  deadlift: '/exercises/deadlift.svg',
+  overheadpress: '/exercises/overhead-press.svg',
+  pullup: '/exercises/pull-up.svg',
+  barbellrow: '/exercises/barbell-row.svg',
+  lunge: '/exercises/lunge.svg',
+  legpress: '/exercises/leg-press.svg',
+};
+
+const EXERCISE_NAME_ALIASES: Record<string, string[]> = {
+  benchpress: ['벤치프레스', '벤치 프레스', 'benchpress', 'bench press'],
+  squat: ['스쿼트', 'squat'],
+  deadlift: ['데드리프트', 'deadlift', 'dead lift'],
+  overheadpress: ['오버헤드 프레스', '오버헤드프레스', 'overhead press', 'shoulder press'],
+  pullup: ['풀업', '턱걸이', 'pullup', 'pull up', 'chin up'],
+  barbellrow: ['바벨 로우', '바벨로우', '바벨로', 'barbell row', 'bent over row'],
+  lunge: ['런지', 'lunge'],
+  legpress: ['레그 프레스', '레그프레스', 'leg press'],
+};
+
+function normalizeExerciseName(name: string) {
+  return name.toLowerCase().replace(/\s+/g, '');
+}
+
+function resolveExerciseImage(name: string) {
+  const normalizedName = normalizeExerciseName(name);
+
+  for (const [key, aliases] of Object.entries(EXERCISE_NAME_ALIASES)) {
+    const matched = aliases.some((alias) => normalizeExerciseName(alias) === normalizedName);
+    if (matched) {
+      return EXERCISE_IMAGE_BY_KEY[key] || '/exercises/workout-default.svg';
+    }
+  }
+
+  return '/exercises/workout-default.svg';
+}
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeDays, setActiveDays] = useState(0);
   const [allRecords, setAllRecords] = useState<WorkoutRecordResponse[]>([]);
+  const [exerciseTypes, setExerciseTypes] = useState<ExerciseType[]>([]);
   const [selectedDate, setSelectedDate] = useState(getTodayDateKey());
 
   const selectedDateRecords = useMemo(() => {
@@ -78,15 +121,17 @@ export default function Dashboard() {
 
   const fetchInitialData = async () => {
     try {
-      const [userResponse, summaryResponse, recordsResponse] = await Promise.all([
+      const [userResponse, summaryResponse, recordsResponse, exerciseResponse] = await Promise.all([
         getCurrentUser(),
         getWeeklyWorkoutSummary(),
         getWorkoutRecords(),
+        getExerciseTypes(),
       ]);
 
       setUser(userResponse.data);
       setActiveDays(summaryResponse.data.activeDays);
       setAllRecords(recordsResponse.data);
+      setExerciseTypes(exerciseResponse.data);
     } catch (err) {
       console.error('대시보드 데이터 조회 실패:', err);
       localStorage.removeItem('accessToken');
@@ -240,18 +285,35 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="mt-4 space-y-4">
-                {groupedRecentRecords.map(([exerciseName, records]) => (
-                  <div key={exerciseName} className="border border-gray-200 rounded-lg p-4">
-                    <p className="font-semibold text-gray-800">{exerciseName}</p>
-                    <ul className="mt-2 space-y-2">
-                      {records.map((record) => (
-                        <li key={record.id} className="text-sm text-gray-600">
-                          {record.setCount}세트 - {record.weightKg}kg × {record.reps}회
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                {groupedRecentRecords.map(([exerciseName, records]) => {
+                  const isDefaultExercise = exerciseTypes.some(
+                    (e) => e.name === exerciseName && e.isDefault
+                  );
+
+                  return (
+                    <div key={exerciseName} className="border border-gray-200 rounded-lg overflow-hidden">
+                      <div className="flex">
+                        {isDefaultExercise && (
+                          <img
+                            src={resolveExerciseImage(exerciseName)}
+                            alt={exerciseName}
+                            className="w-32 h-32 object-cover flex-shrink-0"
+                          />
+                        )}
+                        <div className="flex-1 p-4">
+                          <p className="font-semibold text-gray-800 mb-2">{exerciseName}</p>
+                          <ul className="space-y-1">
+                            {records.map((record) => (
+                              <li key={record.id} className="text-sm text-gray-600">
+                                {record.setCount}세트 - {record.weightKg}kg × {record.reps}회
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

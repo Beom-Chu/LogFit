@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Lunge</title>
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5d5c8" />
+      <stop offset="100%" stop-color="#e8b8ad" />
+    </linearGradient>
+    <linearGradient id="leg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e74c3c" />
+      <stop offset="100%" stop-color="#c0392b" />
+    </linearGradient>
+    <linearGradient id="glute" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d35400" />
+      <stop offset="100%" stop-color="#b8860b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#f5f7fa" />
+  <!-- 머리 -->
+  <circle cx="600" cy="280" r="50" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 상체 -->
+  <ellipse cx="600" cy="390" rx="120" ry="85" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 목 -->
+  <rect x="570" y="320" width="60" height="50" rx="15" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 팔 -->
+  <line x1="510" y1="340" x2="420" y2="280" stroke="url(#glute)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="420" cy="280" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <line x1="690" y1="340" x2="780" y2="280" stroke="url(#glute)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="780" cy="280" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 엉덩이 근육 -->
+  <ellipse cx="560" cy="460" rx="60" ry="75" fill="url(#glute)" stroke="#d35400" stroke-width="1.5" />
+  <ellipse cx="640" cy="460" rx="60" ry="75" fill="url(#glute)" stroke="#d35400" stroke-width="1.5" />
+  <!-- 앞다리 (구부려진) -->
+  <line x1="520" y1="470" x2="460" y2="680" stroke="url(#leg)" stroke-width="36" stroke-linecap="round" />
+  <circle cx="460" cy="680" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 뒷다리 (펼쳐진) -->
+  <line x1="680" y1="470" x2="760" y2="560" stroke="url(#leg)" stroke-width="36" stroke-linecap="round" />
+  <circle cx="760" cy="560" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 발 -->
+  <ellipse cx="460" cy="730" rx="32" ry="38" fill="#3a3a3a" />
+  <ellipse cx="760" cy="610" rx="32" ry="38" fill="#3a3a3a" />
+  <text x="600" y="120" text-anchor="middle" font-size="64" font-family="Arial, sans-serif" fill="#1a1a1a" font-weight="700">Lunge</text>
+</svg>
+

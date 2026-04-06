@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Deadlift</title>
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5d5c8" />
+      <stop offset="100%" stop-color="#e8b8ad" />
+    </linearGradient>
+    <linearGradient id="back" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e74c3c" />
+      <stop offset="100%" stop-color="#c0392b" />
+    </linearGradient>
+    <linearGradient id="leg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d35400" />
+      <stop offset="100%" stop-color="#b8860b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#f5f7fa" />
+  <!-- 바벨 (바닥) -->
+  <rect x="380" y="620" width="440" height="24" rx="12" fill="#4a4a4a" />
+  <circle cx="360" cy="632" r="32" fill="#2a2a2a" />
+  <circle cx="840" cy="632" r="32" fill="#2a2a2a" />
+  <!-- 머리 -->
+  <circle cx="600" cy="240" r="48" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 구부러진 상태의 등 -->
+  <path d="M 500 300 L 550 500 Q 580 580 520 620" fill="url(#back)" stroke="#b8270d" stroke-width="2" />
+  <path d="M 700 300 L 650 500 Q 620 580 680 620" fill="url(#back)" stroke="#b8270d" stroke-width="2" />
+  <!-- 등 근육 (강조) -->
+  <ellipse cx="570" cy="420" rx="110" ry="70" fill="url(#back)" opacity="0.8" stroke="#c0392b" stroke-width="1.5" />
+  <!-- 목 -->
+  <rect x="570" y="280" width="60" height="50" rx="15" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 팔 (쭉 펴진 상태) -->
+  <line x1="480" y1="310" x2="400" y2="220" stroke="url(#leg)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="400" cy="220" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <line x1="720" y1="310" x2="800" y2="220" stroke="url(#leg)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="800" cy="220" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 다리 (스트레이트) -->
+  <line x1="540" y1="620" x2="500" y2="750" stroke="url(#leg)" stroke-width="38" stroke-linecap="round" />
+  <circle cx="500" cy="750" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <line x1="660" y1="620" x2="700" y2="750" stroke="url(#leg)" stroke-width="38" stroke-linecap="round" />
+  <circle cx="700" cy="750" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 발 -->
+  <ellipse cx="500" cy="790" rx="30" ry="36" fill="#3a3a3a" />
+  <ellipse cx="700" cy="790" rx="30" ry="36" fill="#3a3a3a" />
+  <text x="600" y="120" text-anchor="middle" font-size="64" font-family="Arial, sans-serif" fill="#1a1a1a" font-weight="700">Deadlift</text>
+</svg>
+

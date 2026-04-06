@@ -1,11 +1,8 @@
 spring:
   application:
     name: logfit-backend
-  datasource:
-    url: jdbc:postgresql://localhost:5432/logfit
-    driverClassName: org.postgresql.Driver
-    username: logfit
-    password: logfit123
+  profiles:
+    active: supabase   # 로컬 DB 사용 시: local / Supabase 사용 시: supabase
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
@@ -20,3 +17,31 @@ jwt:
   access-token-expiration: 3600000
   refresh-token-expiration: 604800000
 
+---
+# ==============================
+# 로컬 Docker PostgreSQL
+# ==============================
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/logfit
+    driver-class-name: org.postgresql.Driver
+    username: logfit
+    password: logfit123
+
+---
+# ==============================
+# Supabase PostgreSQL
+# Supabase 대시보드 > Settings > Database > JDBC Connection string 참고
+# ==============================
+spring:
+  config:
+    activate:
+      on-profile: supabase
+  datasource:
+    url: jdbc:postgresql://aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: logfit.lxiuscztoxwgafkdtkdv
+    password: logfit123

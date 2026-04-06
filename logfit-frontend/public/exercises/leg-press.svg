@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Leg Press</title>
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5d5c8" />
+      <stop offset="100%" stop-color="#e8b8ad" />
+    </linearGradient>
+    <linearGradient id="leg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e74c3c" />
+      <stop offset="100%" stop-color="#c0392b" />
+    </linearGradient>
+    <linearGradient id="quad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d35400" />
+      <stop offset="100%" stop-color="#b8860b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#f5f7fa" />
+  <!-- 레그프레스 머신 -->
+  <polygon points="320,480 360,320 780,320 820,480" fill="#64748b" stroke="#4a5568" stroke-width="2" />
+  <rect x="700" y="240" width="220" height="160" rx="10" fill="#475569" stroke="#2d3748" stroke-width="2" />
+  <circle cx="730" cy="270" r="10" fill="#94a3b8" />
+  <circle cx="910" cy="270" r="10" fill="#94a3b8" />
+  <!-- 등받이 (누운 상태) -->
+  <rect x="220" y="400" width="50" height="160" rx="15" fill="#8b7355" stroke="#6b5344" stroke-width="1.5" />
+  <!-- 머리 -->
+  <circle cx="360" cy="420" r="45" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 상체 -->
+  <ellipse cx="360" cy="510" rx="100" ry="70" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 팔 -->
+  <line x1="290" y1="480" x2="200" y2="420" stroke="url(#quad)" stroke-width="28" stroke-linecap="round" />
+  <circle cx="200" cy="420" r="22" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <line x1="430" y1="480" x2="520" y2="420" stroke="url(#quad)" stroke-width="28" stroke-linecap="round" />
+  <circle cx="520" cy="420" r="22" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 다리 (펼쳐진 상태) -->
+  <ellipse cx="500" cy="590" rx="90" ry="120" fill="url(#leg)" stroke="#b8270d" stroke-width="2" />
+  <ellipse cx="620" cy="590" rx="90" ry="120" fill="url(#leg)" stroke="#b8270d" stroke-width="2" />
+  <!-- 허벅지 근육 (강조) -->
+  <path d="M 460 550 Q 440 600 470 680" fill="url(#quad)" opacity="0.85" stroke="#d35400" stroke-width="1.5" />
+  <path d="M 660 550 Q 680 600 650 680" fill="url(#quad)" opacity="0.85" stroke="#d35400" stroke-width="1.5" />
+  <!-- 아래 다리 -->
+  <line x1="480" y1="700" x2="440" y2="780" stroke="url(#quad)" stroke-width="30" stroke-linecap="round" />
+  <line x1="620" y1="700" x2="660" y2="780" stroke="url(#quad)" stroke-width="30" stroke-linecap="round" />
+  <!-- 발 -->
+  <ellipse cx="440" cy="820" rx="32" ry="38" fill="#3a3a3a" />
+  <ellipse cx="660" cy="820" rx="32" ry="38" fill="#3a3a3a" />
+  <text x="600" y="120" text-anchor="middle" font-size="64" font-family="Arial, sans-serif" fill="#1a1a1a" font-weight="700">Leg Press</text>
+</svg>
+

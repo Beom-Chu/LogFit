@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Barbell Row</title>
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5d5c8" />
+      <stop offset="100%" stop-color="#e8b8ad" />
+    </linearGradient>
+    <linearGradient id="back" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e74c3c" />
+      <stop offset="100%" stop-color="#c0392b" />
+    </linearGradient>
+    <linearGradient id="arm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d35400" />
+      <stop offset="100%" stop-color="#b8860b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#f5f7fa" />
+  <!-- 바벨 (밑) -->
+  <rect x="360" y="560" width="480" height="26" rx="13" fill="#4a4a4a" />
+  <circle cx="340" cy="573" r="34" fill="#2a2a2a" />
+  <circle cx="860" cy="573" r="34" fill="#2a2a2a" />
+  <!-- 머리 -->
+  <circle cx="640" cy="260" r="48" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 구부린 등 (로우 자세) -->
+  <path d="M 540 320 L 500 460 Q 480 540 520 560" fill="url(#back)" stroke="#b8270d" stroke-width="2" />
+  <path d="M 740 320 L 780 460 Q 800 540 760 560" fill="url(#back)" stroke="#b8270d" stroke-width="2" />
+  <!-- 등 근육 (넓은등, 강조) -->
+  <ellipse cx="600" cy="420" rx="110" ry="75" fill="url(#back)" opacity="0.85" stroke="#c0392b" stroke-width="1.5" />
+  <!-- 목 -->
+  <rect x="610" y="300" width="60" height="55" rx="18" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 팔 (당긴 상태) -->
+  <line x1="520" y1="380" x2="400" y2="300" stroke="url(#arm)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="400" cy="300" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <line x1="740" y1="380" x2="860" y2="300" stroke="url(#arm)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="860" cy="300" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 다리 -->
+  <line x1="580" y1="560" x2="540" y2="730" stroke="url(#arm)" stroke-width="36" stroke-linecap="round" />
+  <circle cx="540" cy="730" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <line x1="700" y1="560" x2="740" y2="730" stroke="url(#arm)" stroke-width="36" stroke-linecap="round" />
+  <circle cx="740" cy="730" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 발 -->
+  <ellipse cx="540" cy="780" rx="30" ry="36" fill="#3a3a3a" />
+  <ellipse cx="740" cy="780" rx="30" ry="36" fill="#3a3a3a" />
+  <text x="600" y="120" text-anchor="middle" font-size="64" font-family="Arial, sans-serif" fill="#1a1a1a" font-weight="700">Barbell Row</text>
+</svg>
+

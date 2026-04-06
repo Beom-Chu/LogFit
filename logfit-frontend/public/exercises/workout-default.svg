@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Workout Default</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eff6ff" />
+      <stop offset="100%" stop-color="#e0f2fe" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)" />
+  <circle cx="600" cy="340" r="8" fill="#0f172a" />
+  <line x1="600" y1="348" x2="600" y2="450" stroke="#0f172a" stroke-width="6" />
+  <line x1="600" y1="380" x2="540" y2="420" stroke="#0f172a" stroke-width="6" />
+  <line x1="600" y1="380" x2="660" y2="420" stroke="#0f172a" stroke-width="6" />
+  <line x1="600" y1="450" x2="560" y2="550" stroke="#0f172a" stroke-width="6" />
+  <line x1="600" y1="450" x2="640" y2="550" stroke="#0f172a" stroke-width="6" />
+  <text x="600" y="650" text-anchor="middle" font-size="28" font-family="Arial, sans-serif" fill="#475569">운동 선택 시 이미지 표시됩니다</text>
+</svg>
+

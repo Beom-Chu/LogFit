@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Bench Press</title>
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5d5c8" />
+      <stop offset="100%" stop-color="#e8b8ad" />
+    </linearGradient>
+    <linearGradient id="chest" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e74c3c" />
+      <stop offset="100%" stop-color="#c0392b" />
+    </linearGradient>
+    <linearGradient id="arm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d35400" />
+      <stop offset="100%" stop-color="#b8860b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#f5f7fa" />
+  <!-- 벤치 -->
+  <rect x="180" y="480" width="840" height="50" rx="8" fill="#8b5a3c" />
+  <ellipse cx="180" cy="530" rx="20" ry="40" fill="#6b4423" />
+  <ellipse cx="1020" cy="530" rx="20" ry="40" fill="#6b4423" />
+  <rect x="260" y="440" width="680" height="40" rx="6" fill="#a0694a" />
+  <!-- 바벨 -->
+  <rect x="380" y="280" width="440" height="28" rx="14" fill="#4a4a4a" />
+  <circle cx="360" cy="294" r="36" fill="#2a2a2a" />
+  <circle cx="840" cy="294" r="36" fill="#2a2a2a" />
+  <!-- 몸 -->
+  <ellipse cx="600" cy="430" rx="160" ry="95" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 가슴 근육 (상세) -->
+  <path d="M 460 390 Q 440 430 460 480" fill="url(#chest)" stroke="#b8270d" stroke-width="2" />
+  <path d="M 740 390 Q 760 430 740 480" fill="url(#chest)" stroke="#b8270d" stroke-width="2" />
+  <ellipse cx="520" cy="420" rx="40" ry="55" fill="url(#chest)" opacity="0.8" />
+  <ellipse cx="680" cy="420" rx="40" ry="55" fill="url(#chest)" opacity="0.8" />
+  <!-- 목 -->
+  <rect x="570" y="320" width="60" height="60" rx="20" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 머리 -->
+  <circle cx="600" cy="250" r="50" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 왼팔 -->
+  <line x1="420" y1="410" x2="260" y2="300" stroke="url(#arm)" stroke-width="36" stroke-linecap="round" />
+  <circle cx="260" cy="300" r="26" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 오른팔 -->
+  <line x1="780" y1="410" x2="940" y2="300" stroke="url(#arm)" stroke-width="36" stroke-linecap="round" />
+  <circle cx="940" cy="300" r="26" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 다리 -->
+  <line x1="500" y1="520" x2="440" y2="680" stroke="url(#arm)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="440" cy="680" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <line x1="700" y1="520" x2="760" y2="680" stroke="url(#arm)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="760" cy="680" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 신발 -->
+  <ellipse cx="440" cy="720" rx="28" ry="32" fill="#3a3a3a" />
+  <ellipse cx="760" cy="720" rx="28" ry="32" fill="#3a3a3a" />
+  <text x="600" y="120" text-anchor="middle" font-size="64" font-family="Arial, sans-serif" fill="#1a1a1a" font-weight="700">Bench Press</text>
+</svg>
+

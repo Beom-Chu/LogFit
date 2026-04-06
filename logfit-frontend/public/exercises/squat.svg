@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title">
+  <title id="title">Back Squat</title>
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5d5c8" />
+      <stop offset="100%" stop-color="#e8b8ad" />
+    </linearGradient>
+    <linearGradient id="leg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e74c3c" />
+      <stop offset="100%" stop-color="#c0392b" />
+    </linearGradient>
+    <linearGradient id="glute" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d35400" />
+      <stop offset="100%" stop-color="#b8860b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#f5f7fa" />
+  <!-- 바벨 -->
+  <rect x="360" y="200" width="480" height="30" rx="15" fill="#4a4a4a" />
+  <circle cx="330" cy="215" r="38" fill="#2a2a2a" />
+  <circle cx="870" cy="215" r="38" fill="#2a2a2a" />
+  <!-- 머리 -->
+  <circle cx="600" cy="280" r="50" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 상체 -->
+  <ellipse cx="600" cy="380" rx="130" ry="80" fill="url(#skin)" stroke="#8b7355" stroke-width="2" />
+  <!-- 등 근육 -->
+  <path d="M 540 350 Q 520 390 540 430" fill="url(#glute)" stroke="#b8860b" stroke-width="2" />
+  <path d="M 660 350 Q 680 390 660 430" fill="url(#glute)" stroke="#b8860b" stroke-width="2" />
+  <!-- 목 -->
+  <rect x="570" y="320" width="60" height="50" rx="15" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 팔 -->
+  <line x1="480" y1="340" x2="380" y2="280" stroke="url(#glute)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="380" cy="280" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <line x1="720" y1="340" x2="820" y2="280" stroke="url(#glute)" stroke-width="32" stroke-linecap="round" />
+  <circle cx="820" cy="280" r="24" fill="url(#skin)" stroke="#8b7355" stroke-width="1.5" />
+  <!-- 하체 -->
+  <ellipse cx="560" cy="520" rx="80" ry="100" fill="url(#leg)" stroke="#b8270d" stroke-width="2" />
+  <ellipse cx="640" cy="520" rx="80" ry="100" fill="url(#leg)" stroke="#b8270d" stroke-width="2" />
+  <!-- 엉덩이 근육 -->
+  <path d="M 520 450 Q 500 490 530 540" fill="url(#glute)" opacity="0.9" stroke="#d35400" stroke-width="1.5" />
+  <path d="M 680 450 Q 700 490 670 540" fill="url(#glute)" opacity="0.9" stroke="#d35400" stroke-width="1.5" />
+  <!-- 다리 -->
+  <line x1="520" y1="600" x2="480" y2="710" stroke="url(#leg)" stroke-width="36" stroke-linecap="round" />
+  <line x1="680" y1="600" x2="720" y2="710" stroke="url(#leg)" stroke-width="36" stroke-linecap="round" />
+  <!-- 발 -->
+  <ellipse cx="480" cy="750" rx="32" ry="38" fill="#3a3a3a" />
+  <ellipse cx="720" cy="750" rx="32" ry="38" fill="#3a3a3a" />
+  <text x="600" y="120" text-anchor="middle" font-size="64" font-family="Arial, sans-serif" fill="#1a1a1a" font-weight="700">Back Squat</text>
+</svg>
+
