@@ -141,18 +141,4 @@ public class WorkoutSessionController {
         return ApiResponse.success(workoutSessionService.toggleSetComplete(userId, setId));
     }
 
-    @Operation(summary = "운동 이력 목록 (완료된 세션)")
-    @GetMapping("/workout-history")
-    public ApiResponse<List<WorkoutSessionSummary>> getWorkoutHistory(
-            @AuthenticationPrincipal Long userId) {
-        return ApiResponse.success(workoutSessionService.getCompletedSessions(userId));
-    }
-
-    @Operation(summary = "운동 이력 상세")
-    @GetMapping("/workout-history/{sessionId}")
-    public ApiResponse<WorkoutSessionResponse> getWorkoutHistoryDetail(
-            @AuthenticationPrincipal Long userId,
-            @PathVariable Long sessionId) {
-        return ApiResponse.success(workoutSessionService.getSession(userId, sessionId));
-    }
 }

@@ -3,12 +3,14 @@ package com.logfit.domain.user.dto;
 import com.logfit.domain.user.entity.User;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+
 @Getter
 public class UserProfileResponse {
     private final Long userId;
     private final String email;
     private final String nickname;
-    private final Double heightCm;
+    private final BigDecimal heightCm;
     private final String gender;
     private final Integer birthYear;
 

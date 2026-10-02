@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -28,7 +30,7 @@ public class User extends BaseEntity {
     private String nickname;
 
     @Column(precision = 5, scale = 2)
-    private Double heightCm;
+    private BigDecimal heightCm;
 
     @Column(length = 20)
     private String gender;
@@ -42,7 +44,7 @@ public class User extends BaseEntity {
         this.nickname = nickname;
     }
 
-    public void updateProfile(String nickname, Double heightCm, String gender, Integer birthYear) {
+    public void updateProfile(String nickname, BigDecimal heightCm, String gender, Integer birthYear) {
         this.nickname = nickname;
         this.heightCm = heightCm;
         this.gender = gender;

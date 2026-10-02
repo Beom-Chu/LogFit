@@ -30,7 +30,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath gender = createString("gender");
 
-    public final NumberPath<Double> heightCm = createNumber("heightCm", Double.class);
+    public final NumberPath<java.math.BigDecimal> heightCm = createNumber("heightCm", java.math.BigDecimal.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
