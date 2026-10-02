@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { isAxiosError } from 'axios';
 import { authApi } from '../../api/auth';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
@@ -24,8 +25,21 @@ export default function SignupPage() {
     try {
       await authApi.signup({ email: form.email, nickname: form.nickname, password: form.password });
       navigate('/login');
-    } catch {
-      setError('회원가입에 실패했습니다. 이미 사용 중인 이메일일 수 있습니다.');
+    } catch (err) {
+      if (isAxiosError(err)) {
+        const status = err.response?.status;
+        if (status === 409) {
+          setError('이미 사용 중인 이메일입니다.');
+        } else if (status === 400) {
+          setError('입력값을 확인해주세요.');
+        } else if (!err.response) {
+          setError('서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.');
+        } else {
+          setError('회원가입에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        }
+      } else {
+        setError('알 수 없는 오류가 발생했습니다.');
+      }
     } finally {
       setLoading(false);
     }
