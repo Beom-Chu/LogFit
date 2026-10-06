@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { historyApi } from '../api/history';
 import type { WorkoutSessionSummary } from '../types';
 import Card from '../components/common/Card';
-import LoadingSpinner from '../components/common/LoadingSpinner';
+import Badge, { statusVariant } from '../components/common/Badge';
+import { SkeletonCard } from '../components/common/LoadingSpinner';
 import ErrorState from '../components/common/ErrorState';
 import EmptyState from '../components/common/EmptyState';
 
@@ -29,36 +30,43 @@ export default function HistoryPage() {
   useEffect(() => { load(); }, []);
 
   return (
-    <div className="px-4 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-100">←</button>
-        <h2 className="text-lg font-bold">운동 이력</h2>
-      </div>
+    <div className="px-4 pt-5 pb-6">
+      <h1 className="text-xl font-bold text-gray-900 mb-4">운동 이력</h1>
 
       {loading ? (
-        <LoadingSpinner className="h-48" />
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
+        </div>
       ) : error ? (
         <ErrorState onRetry={load} />
       ) : !sessions.length ? (
-        <EmptyState message="운동 기록이 없습니다." actionLabel="운동 시작하기" onAction={() => navigate('/workout/new')} />
+        <EmptyState
+          message="운동 기록이 없습니다."
+          description="운동을 시작해 기록을 남겨보세요."
+          actionLabel="운동 시작하기"
+          onAction={() => navigate('/workout/new')}
+        />
       ) : (
         <div className="space-y-3">
           {sessions.map((s) => (
             <Card
               key={s.sessionId}
-              className="cursor-pointer"
+              className="cursor-pointer active:bg-gray-50 transition-colors"
               onClick={() => navigate(`/history/${s.sessionId}`)}
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-gray-900">{s.displayName}</p>
-                  <p className="text-xs text-gray-400 mt-1">{s.workoutDate}</p>
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-semibold text-gray-900 truncate">{s.displayName}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{s.workoutDate}</p>
                 </div>
-                <div className="text-right">
+                <div className="flex items-center gap-2 shrink-0">
                   {s.totalDurationMinutes && (
-                    <p className="text-sm text-gray-600">{s.totalDurationMinutes}분</p>
+                    <span className="text-xs text-gray-400">{s.totalDurationMinutes}분</span>
                   )}
-                  <p className="text-xs text-gray-400">›</p>
+                  <Badge variant={statusVariant(s.status)} />
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-gray-300">
+                    <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                  </svg>
                 </div>
               </div>
             </Card>

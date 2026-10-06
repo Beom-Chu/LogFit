@@ -82,7 +82,7 @@ export default function ExerciseSelectPage() {
               key={g.value}
               onClick={() => setMuscle(g.value)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors
-                ${muscle === g.value ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}
+                ${muscle === g.value ? 'bg-emerald-700 text-white' : 'bg-gray-100 text-gray-600'}`}
             >
               {g.label}
             </button>

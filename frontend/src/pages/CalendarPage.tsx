@@ -74,13 +74,13 @@ export default function CalendarPage() {
                 key={date}
                 onClick={() => handleDayClick(date)}
                 className={`aspect-square flex flex-col items-center justify-center rounded-xl text-xs relative
-                  ${isToday ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}
+                  ${isToday ? 'bg-emerald-700 text-white' : 'hover:bg-gray-100'}
                   ${dayOfWeek === 0 ? 'text-red-400' : dayOfWeek === 6 ? 'text-blue-400' : ''}`}
               >
                 <span className={`font-medium ${isToday ? 'text-white' : ''}`}>{i + 1}</span>
                 {dayData && dayData.workoutCount > 0 && (
                   <div className="flex gap-0.5 mt-0.5">
-                    {dayData.hasCompletedWorkout && <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
+                    {dayData.hasCompletedWorkout && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
                     {dayData.hasInProgressWorkout && <span className="w-1.5 h-1.5 rounded-full bg-green-400" />}
                     {dayData.hasPlannedWorkout && <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />}
                   </div>
@@ -92,7 +92,7 @@ export default function CalendarPage() {
       )}
 
       <div className="mt-6 flex gap-4 text-xs text-gray-500">
-        <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-400" />완료</div>
+        <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" />완료</div>
         <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400" />진행중</div>
         <div className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-orange-400" />계획</div>
       </div>

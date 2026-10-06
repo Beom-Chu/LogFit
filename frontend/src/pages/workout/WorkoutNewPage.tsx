@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import { workoutApi } from '../../api/workout';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import PageHeader from '../../components/common/PageHeader';
 
 export default function WorkoutNewPage() {
   const navigate = useNavigate();
@@ -28,13 +29,10 @@ export default function WorkoutNewPage() {
   };
 
   return (
-    <div className="px-4 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-100">←</button>
-        <h2 className="text-lg font-bold">운동 생성</h2>
-      </div>
+    <div className="min-h-screen bg-[#F5F7F8]">
+      <PageHeader title="운동 생성" />
 
-      <div className="space-y-5">
+      <div className="px-4 space-y-5">
         <Input
           label="운동 날짜"
           type="date"
@@ -43,26 +41,32 @@ export default function WorkoutNewPage() {
         />
 
         <div>
-          <p className="text-sm font-medium text-gray-700 mb-2">상태</p>
-          <div className="flex gap-3">
-            <button
-              onClick={() => setStatus('IN_PROGRESS')}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors
-                ${status === 'IN_PROGRESS' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-200'}`}
-            >
-              진행중
-            </button>
-            <button
-              onClick={() => setStatus('PLANNED')}
-              className={`flex-1 py-2.5 rounded-xl text-sm font-medium border transition-colors
-                ${status === 'PLANNED' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-200'}`}
-            >
-              계획
-            </button>
+          <p className="text-sm font-medium text-gray-700 mb-2.5">유형</p>
+          <div className="grid grid-cols-2 gap-3">
+            {([['IN_PROGRESS', '지금 운동', '바로 운동 시작'], ['PLANNED', '운동 계획', '미래 운동 예약']] as const).map(
+              ([val, label, sub]) => (
+                <button
+                  key={val}
+                  onClick={() => setStatus(val)}
+                  className={`py-3 px-4 rounded-xl text-sm font-medium border-2 transition-colors text-left
+                    ${status === val
+                      ? 'bg-emerald-700 text-white border-emerald-700'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                    }`}
+                >
+                  <span className="block font-semibold">{label}</span>
+                  <span className={`block text-xs mt-0.5 ${status === val ? 'text-emerald-100' : 'text-gray-400'}`}>
+                    {sub}
+                  </span>
+                </button>
+              )
+            )}
           </div>
         </div>
 
-        <Button fullWidth size="lg" onClick={handleContinue} loading={loading}>계속</Button>
+        <Button fullWidth size="lg" onClick={handleContinue} loading={loading}>
+          운동 시작하기
+        </Button>
       </div>
     </div>
   );

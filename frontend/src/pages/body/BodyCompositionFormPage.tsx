@@ -45,7 +45,7 @@ export default function BodyCompositionFormPage() {
       </div>
 
       <div className="space-y-4">
-        <p className="text-xs text-blue-600 bg-blue-50 px-3 py-2 rounded-lg">
+        <p className="text-xs text-emerald-700 bg-emerald-50 px-3 py-2 rounded-lg">
           💡 체성분 저장 시 체중이 자동으로 기록됩니다.
         </p>
         <Input label="체중 (kg)" type="number" value={form.weight} onChange={handleChange('weight')} placeholder="77.3" step="0.1" />

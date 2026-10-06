@@ -54,8 +54,8 @@ export default function ProfilePage() {
 
       <Card>
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl">
-            👤
+          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-2xl font-bold text-emerald-700">
+            {profile?.nickname?.[0]?.toUpperCase() ?? '?'}
           </div>
           <div>
             <p className="font-bold text-gray-900">{profile?.nickname}</p>

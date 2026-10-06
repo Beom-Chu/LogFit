@@ -60,7 +60,7 @@ export default function BodyPage() {
           <Card>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-400">현재 체중</p>
+                <p className="text-xs text-gray-400">최근 기록 체중</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">
                   {latestWeight != null ? `${latestWeight}kg` : '기록 없음'}
                 </p>
@@ -78,7 +78,7 @@ export default function BodyPage() {
                   <XAxis dataKey="date" tick={{ fontSize: 10 }} tickFormatter={(v) => v.slice(5)} />
                   <YAxis tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
                   <Tooltip formatter={(v) => [`${v}kg`, '체중']} labelFormatter={(l) => l} />
-                  <Line type="monotone" dataKey="weight" stroke="#2563eb" strokeWidth={2} dot={{ r: 3 }} />
+                  <Line type="monotone" dataKey="weight" stroke="#047857" strokeWidth={2} dot={{ r: 3 }} />
                 </LineChart>
               </ResponsiveContainer>
             </Card>

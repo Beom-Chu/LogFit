@@ -83,11 +83,11 @@ export default function StatisticsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <Card className="text-center">
                   <p className="text-xs text-gray-400">총 운동 횟수</p>
-                  <p className="text-2xl font-bold text-blue-600">{summary.totalWorkouts}</p>
+                  <p className="text-2xl font-bold text-emerald-700">{summary.totalWorkouts}</p>
                 </Card>
                 <Card className="text-center">
                   <p className="text-xs text-gray-400">총 세트 수</p>
-                  <p className="text-2xl font-bold text-blue-600">{summary.totalSets}</p>
+                  <p className="text-2xl font-bold text-emerald-700">{summary.totalSets}</p>
                 </Card>
                 <Card className="text-center">
                   <p className="text-xs text-gray-400">연속 운동</p>
@@ -121,7 +121,7 @@ export default function StatisticsPage() {
                         <p className="text-xs text-gray-400">{pr.achievedDate}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-blue-600">{pr.maxWeight}kg</p>
+                        <p className="font-bold text-emerald-700">{pr.maxWeight}kg</p>
                         <p className="text-xs text-gray-400">{pr.repsAtMaxWeight}회</p>
                       </div>
                     </div>
@@ -153,7 +153,7 @@ export default function StatisticsPage() {
                       <XAxis dataKey="date" tick={{ fontSize: 9 }} tickFormatter={(v) => v.slice(5)} />
                       <YAxis tick={{ fontSize: 10 }} />
                       <Tooltip formatter={(v) => [`${v}kg`, '볼륨']} />
-                      <Bar dataKey="totalVolume" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="totalVolume" fill="#047857" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 )}

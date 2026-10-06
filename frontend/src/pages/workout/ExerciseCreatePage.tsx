@@ -65,7 +65,7 @@ export default function ExerciseCreatePage() {
                 key={opt.value}
                 onClick={() => setMuscleGroup(opt.value)}
                 className={`py-2 rounded-xl text-xs font-medium border transition-colors
-                  ${muscleGroup === opt.value ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-200'}`}
+                  ${muscleGroup === opt.value ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-white text-gray-600 border-gray-200'}`}
               >
                 {opt.label}
               </button>
@@ -81,7 +81,7 @@ export default function ExerciseCreatePage() {
                 key={opt.value}
                 onClick={() => setTrackingType(opt.value)}
                 className={`py-2.5 rounded-xl text-xs font-medium border transition-colors
-                  ${trackingType === opt.value ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-200'}`}
+                  ${trackingType === opt.value ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-white text-gray-600 border-gray-200'}`}
               >
                 {opt.label}
               </button>

@@ -17,7 +17,7 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_COLORS: Record<string, string> = {
   PLANNED: 'bg-orange-100 text-orange-700',
   IN_PROGRESS: 'bg-green-100 text-green-700',
-  COMPLETED: 'bg-blue-100 text-blue-700',
+  COMPLETED: 'bg-emerald-100 text-blue-700',
 };
 
 export default function CalendarDayPage() {

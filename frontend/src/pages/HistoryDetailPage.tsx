@@ -47,9 +47,9 @@ export default function HistoryDetailPage() {
         <div className="space-y-4">
           <div className="flex gap-4">
             {data.durationMinutes && (
-              <div className="bg-blue-50 rounded-xl p-3 flex-1 text-center">
+              <div className="bg-emerald-50 rounded-xl p-3 flex-1 text-center">
                 <p className="text-xs text-blue-400">운동시간</p>
-                <p className="text-lg font-bold text-blue-700">{data.durationMinutes}분</p>
+                <p className="text-lg font-bold text-emerald-700">{data.durationMinutes}분</p>
               </div>
             )}
             <div className="bg-gray-50 rounded-xl p-3 flex-1 text-center">
@@ -64,10 +64,10 @@ export default function HistoryDetailPage() {
               <div className="space-y-1">
                 {ex.sets.map((set) => (
                   <div key={set.setOrder} className={`flex items-center gap-3 py-1.5 px-2 rounded-lg text-sm
-                    ${set.completed ? 'bg-blue-50' : ''}`}>
+                    ${set.completed ? 'bg-emerald-50' : ''}`}>
                     <span className="text-gray-400 w-5">{set.setOrder}</span>
                     <span className="text-gray-700">{set.weight}kg × {set.reps}회</span>
-                    {set.completed && <span className="text-blue-500 ml-auto text-xs">✓</span>}
+                    {set.completed && <span className="text-emerald-600 ml-auto text-xs">✓</span>}
                   </div>
                 ))}
               </div>
