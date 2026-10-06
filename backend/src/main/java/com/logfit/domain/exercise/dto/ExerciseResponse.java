@@ -14,6 +14,7 @@ public class ExerciseResponse {
     private final ExerciseSourceType sourceType;
     private final TrackingType trackingType;
     private final boolean isFavorite;
+    private final String imageUrl;
 
     public ExerciseResponse(Exercise exercise, boolean isFavorite) {
         this.exerciseId = exercise.getExerciseId();
@@ -22,5 +23,6 @@ public class ExerciseResponse {
         this.sourceType = exercise.getSourceType();
         this.trackingType = exercise.getTrackingType();
         this.isFavorite = isFavorite;
+        this.imageUrl = exercise.getImageUrl();
     }
 }

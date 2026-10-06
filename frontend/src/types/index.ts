@@ -24,8 +24,12 @@ export interface UserProfile { userId: number; email: string; nickname: string; 
 export interface UpdateProfileRequest { nickname: string; height?: number; gender?: string; }
 
 // Exercise
-export type MuscleGroup = 'CHEST' | 'BACK' | 'SHOULDER' | 'LEG' | 'ARM' | 'ABS' | 'CARDIO' | 'ETC';
-export type TrackingType = 'WEIGHT_REPS' | 'REPS_ONLY' | 'DURATION' | 'DISTANCE';
+export type MuscleGroup =
+  | 'CHEST' | 'BACK' | 'SHOULDER' | 'BICEPS' | 'TRICEPS' | 'FOREARM'
+  | 'LEG' | 'GLUTE' | 'ABS' | 'CARDIO' | 'ARM' | 'ETC';
+export type TrackingType =
+  | 'WEIGHT_REPS' | 'REPS_ONLY' | 'ASSIST_WEIGHT_REPS' | 'TIME_ONLY' | 'DISTANCE_TIME'
+  | 'DURATION' | 'DISTANCE'; // legacy aliases kept for compatibility
 export type ExerciseSourceType = 'SYSTEM' | 'CUSTOM';
 
 export interface Exercise {
@@ -35,6 +39,7 @@ export interface Exercise {
   trackingType: TrackingType;
   sourceType: ExerciseSourceType;
   isFavorite: boolean;
+  imageUrl?: string | null;
 }
 
 // Workout Session

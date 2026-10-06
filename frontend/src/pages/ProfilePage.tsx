@@ -84,6 +84,25 @@ export default function ProfilePage() {
       </Card>
 
       <Button variant="danger" fullWidth onClick={handleLogout}>로그아웃</Button>
+
+      {/* ── RepDB attribution (required by license) ── */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <p className="text-xs font-semibold text-gray-500 mb-2">출처 및 라이선스</p>
+        <p className="text-xs text-gray-400 leading-relaxed">
+          Exercise data by{' '}
+          <a
+            href="https://repdb.co"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-emerald-700 underline"
+          >
+            RepDB (repdb.co)
+          </a>
+        </p>
+        <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+          Outdoor cycling photo: Wikimedia Commons CC0
+        </p>
+      </div>
       </div>
     </div>
   );

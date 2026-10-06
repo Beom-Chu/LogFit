@@ -13,17 +13,19 @@ import java.util.Optional;
 
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
+    // :keywordPattern should be null or a pre-built LOWER'd '%…%' pattern from the service.
+    // This avoids the Hibernate 6 + PostgreSQL lower(bytea) bug with null CONCAT parameters.
     @Query("""
         SELECT e FROM Exercise e
         WHERE e.isDeleted = false
           AND (e.sourceType = 'SYSTEM' OR e.ownerUserId = :userId)
-          AND (:keyword IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+          AND (:keywordPattern IS NULL OR LOWER(e.name) LIKE :keywordPattern)
           AND (:muscleGroup IS NULL OR e.muscleGroup = :muscleGroup)
           AND (:sourceType IS NULL OR e.sourceType = :sourceType)
         """)
     Page<Exercise> findExercises(
             @Param("userId") Long userId,
-            @Param("keyword") String keyword,
+            @Param("keywordPattern") String keywordPattern,
             @Param("muscleGroup") MuscleGroup muscleGroup,
             @Param("sourceType") ExerciseSourceType sourceType,
             Pageable pageable);
@@ -32,12 +34,12 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
         SELECT e FROM Exercise e
         JOIN FavoriteExercise f ON f.exerciseId = e.exerciseId AND f.userId = :userId
         WHERE e.isDeleted = false
-          AND (:keyword IS NULL OR LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+          AND (:keywordPattern IS NULL OR LOWER(e.name) LIKE :keywordPattern)
           AND (:muscleGroup IS NULL OR e.muscleGroup = :muscleGroup)
         """)
     Page<Exercise> findFavoriteExercises(
             @Param("userId") Long userId,
-            @Param("keyword") String keyword,
+            @Param("keywordPattern") String keywordPattern,
             @Param("muscleGroup") MuscleGroup muscleGroup,
             Pageable pageable);
 

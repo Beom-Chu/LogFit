@@ -39,6 +39,14 @@ public class Exercise extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted = false;
 
+    // Set only via SQL seeds (V5 migration); null for custom exercises.
+    @Column(name = "image_url", length = 255)
+    private String imageUrl;
+
+    // Idempotent seed identifier for SYSTEM exercises; null for custom exercises.
+    @Column(name = "stable_key", length = 100, unique = true)
+    private String stableKey;
+
     @Builder
     public Exercise(Long ownerUserId, String name, MuscleGroup muscleGroup,
                     ExerciseSourceType sourceType, TrackingType trackingType) {

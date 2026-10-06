@@ -8,19 +8,49 @@ import EmptyState from '../../components/common/EmptyState';
 import PageHeader from '../../components/common/PageHeader';
 
 const MUSCLE_GROUPS: { label: string; value: MuscleGroup | 'ALL' }[] = [
-  { label: '전체', value: 'ALL' },
-  { label: '가슴', value: 'CHEST' },
-  { label: '등', value: 'BACK' },
-  { label: '어깨', value: 'SHOULDER' },
-  { label: '하체', value: 'LEG' },
-  { label: '팔', value: 'ARM' },
-  { label: '복근', value: 'ABS' },
-  { label: '유산소', value: 'CARDIO' },
+  { label: '전체',    value: 'ALL'      },
+  { label: '가슴',    value: 'CHEST'    },
+  { label: '등',      value: 'BACK'     },
+  { label: '어깨',    value: 'SHOULDER' },
+  { label: '하체',    value: 'LEG'      },
+  { label: '이두',    value: 'BICEPS'   },
+  { label: '삼두',    value: 'TRICEPS'  },
+  { label: '전완',    value: 'FOREARM'  },
+  { label: '엉덩이',  value: 'GLUTE'    },
+  { label: '복근',    value: 'ABS'      },
+  { label: '유산소',  value: 'CARDIO'   },
 ];
 
 const MUSCLE_LABELS: Record<string, string> = {
-  CHEST: '가슴', BACK: '등', SHOULDER: '어깨', LEG: '하체', ARM: '팔', ABS: '복근', CARDIO: '유산소', ETC: '기타',
+  CHEST: '가슴', BACK: '등', SHOULDER: '어깨',
+  BICEPS: '이두', TRICEPS: '삼두', FOREARM: '전완',
+  LEG: '하체', GLUTE: '엉덩이', ABS: '복근', CARDIO: '유산소',
+  ARM: '팔', ETC: '기타',
 };
+
+/** Exercise thumbnail with lazy loading and muscleGroup placeholder fallback */
+function ExerciseThumb({ imageUrl, name }: { imageUrl?: string | null; name: string; muscleGroup: string }) {
+  const [failed, setFailed] = useState(false);
+  if (!imageUrl || failed) {
+    return (
+      <div className="w-14 h-14 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0 text-emerald-700">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-6 h-6" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round"
+            d="M5.121 17.804A8.966 8.966 0 0112 15c2.21 0 4.235.8 5.879 2.118M12 12a4 4 0 100-8 4 4 0 000 8z" />
+        </svg>
+      </div>
+    );
+  }
+  return (
+    <img
+      src={imageUrl}
+      alt={name}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="w-14 h-14 rounded-xl object-contain bg-[#eff4fa] shrink-0"
+    />
+  );
+}
 
 export default function ExerciseSelectPage() {
   const navigate = useNavigate();
@@ -108,13 +138,16 @@ export default function ExerciseSelectPage() {
               <button
                 key={ex.exerciseId}
                 onClick={() => handleSelect(ex.exerciseId)}
-                className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 text-left min-h-[56px]"
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-left"
               >
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{ex.name}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{MUSCLE_LABELS[ex.muscleGroup] || ex.muscleGroup}</p>
+                <ExerciseThumb imageUrl={ex.imageUrl} name={ex.name} muscleGroup={ex.muscleGroup} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{ex.name}</p>
+                  <p className="text-xs text-secondary mt-0.5">
+                    {MUSCLE_LABELS[ex.muscleGroup] || ex.muscleGroup}
+                  </p>
                 </div>
-                {ex.isFavorite && <span className="text-yellow-400 text-base">★</span>}
+                {ex.isFavorite && <span className="text-yellow-400 text-base shrink-0">★</span>}
               </button>
             ))}
           </div>

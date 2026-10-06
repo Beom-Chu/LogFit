@@ -30,11 +30,14 @@ public class ExerciseService {
                                                         ExerciseSourceType sourceType, boolean favoriteOnly,
                                                         int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        // Build lower'd '%keyword%' pattern here to avoid Hibernate 6 + PostgreSQL lower(bytea) bug.
+        String keywordPattern = (keyword != null && !keyword.isBlank())
+                ? "%" + keyword.toLowerCase() + "%" : null;
         Page<Exercise> exercises;
         if (favoriteOnly) {
-            exercises = exerciseRepository.findFavoriteExercises(userId, keyword, muscleGroup, pageable);
+            exercises = exerciseRepository.findFavoriteExercises(userId, keywordPattern, muscleGroup, pageable);
         } else {
-            exercises = exerciseRepository.findExercises(userId, keyword, muscleGroup, sourceType, pageable);
+            exercises = exerciseRepository.findExercises(userId, keywordPattern, muscleGroup, sourceType, pageable);
         }
         Set<Long> favoriteIds = favoriteRepository.findExerciseIdsByUserId(userId);
         Page<ExerciseResponse> responsePage = exercises.map(e -> new ExerciseResponse(e, favoriteIds.contains(e.getExerciseId())));
