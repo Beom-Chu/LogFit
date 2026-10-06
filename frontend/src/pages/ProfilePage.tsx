@@ -6,6 +6,7 @@ import { useAuthStore } from '../store/authStore';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
+import PageHeader from '../components/common/PageHeader';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 export default function ProfilePage() {
@@ -49,9 +50,10 @@ export default function ProfilePage() {
   if (loading) return <LoadingSpinner className="h-64" />;
 
   return (
-    <div className="px-4 py-6 space-y-4">
-      <h1 className="text-xl font-bold text-gray-900">프로필</h1>
+    <div className="pb-6 space-y-4">
+      <PageHeader title="프로필" onBack={false} />
 
+      <div className="px-4 space-y-4">
       <Card>
         <div className="flex items-center gap-4 mb-4">
           <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-2xl font-bold text-emerald-700">
@@ -82,6 +84,7 @@ export default function ProfilePage() {
       </Card>
 
       <Button variant="danger" fullWidth onClick={handleLogout}>로그아웃</Button>
+      </div>
     </div>
   );
 }

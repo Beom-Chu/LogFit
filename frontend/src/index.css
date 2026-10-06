@@ -7,6 +7,7 @@
   --color-brand-mid:   #d1fae5;
   --color-brand-dark:  #065f46;
   --color-app-bg:      #F5F7F8;
+  --color-secondary:   #596579;   /* secondary / muted text */
 }
 
 * {

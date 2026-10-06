@@ -13,6 +13,7 @@ export default function BodyPage() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('weight');
   const [latestWeight, setLatestWeight] = useState<number | null>(null);
+  const [latestWeightDate, setLatestWeightDate] = useState<string | null>(null);
   const [chartData, setChartData] = useState<BodyWeightChartPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +24,10 @@ export default function BodyPage() {
         bodyApi.getLatestWeight(),
         bodyApi.getWeightChart(),
       ]);
-      if (wRes.status === 'fulfilled') setLatestWeight(wRes.value.data.data.weight);
+      if (wRes.status === 'fulfilled') {
+        setLatestWeight(wRes.value.data.data.weight);
+        setLatestWeightDate(wRes.value.data.data.measureDate);
+      }
       if (cRes.status === 'fulfilled') setChartData(cRes.value.data.data);
     } finally {
       setLoading(false);
@@ -35,28 +39,32 @@ export default function BodyPage() {
   if (loading) return <LoadingSpinner className="h-64" />;
 
   return (
-    <div className="px-4 py-6 space-y-4">
-      <h1 className="text-xl font-bold text-gray-900">신체 관리</h1>
+    <div className="pb-6 space-y-4">
+      <div className="px-4 pt-5">
+        <h1 className="text-xl font-bold text-gray-900">신체 관리</h1>
+      </div>
 
-      <div className="flex bg-gray-100 rounded-xl p-1">
-        <button
-          onClick={() => setTab('weight')}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors
-            ${tab === 'weight' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}
-        >
-          체중
-        </button>
-        <button
-          onClick={() => setTab('composition')}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors
-            ${tab === 'composition' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}
-        >
-          체성분
-        </button>
+      <div className="px-4">
+        <div className="flex bg-gray-100 rounded-xl p-1">
+          <button
+            onClick={() => setTab('weight')}
+            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors
+              ${tab === 'weight' ? 'bg-emerald-700 text-white shadow-sm' : 'text-gray-500'}`}
+          >
+            체중
+          </button>
+          <button
+            onClick={() => setTab('composition')}
+            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors
+              ${tab === 'composition' ? 'bg-emerald-700 text-white shadow-sm' : 'text-gray-500'}`}
+          >
+            체성분
+          </button>
+        </div>
       </div>
 
       {tab === 'weight' ? (
-        <>
+        <div className="px-4 space-y-4">
           <Card>
             <div className="flex items-center justify-between">
               <div>
@@ -64,6 +72,9 @@ export default function BodyPage() {
                 <p className="text-3xl font-bold text-gray-900 mt-1">
                   {latestWeight != null ? `${latestWeight}kg` : '기록 없음'}
                 </p>
+                {latestWeightDate && (
+                  <p className="text-xs text-gray-400 mt-0.5">측정일: {latestWeightDate}</p>
+                )}
               </div>
               <Button onClick={() => navigate('/body/weight/new')}>입력</Button>
             </div>
@@ -87,9 +98,9 @@ export default function BodyPage() {
           <Button variant="ghost" fullWidth onClick={() => navigate('/body/weight/history')}>
             기록 전체 보기
           </Button>
-        </>
+        </div>
       ) : (
-        <>
+        <div className="px-4 space-y-4">
           <Card>
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-700">체성분 관리</p>
@@ -99,7 +110,7 @@ export default function BodyPage() {
           <Button variant="ghost" fullWidth onClick={() => navigate('/body/composition/history')}>
             기록 전체 보기
           </Button>
-        </>
+        </div>
       )}
     </div>
   );

@@ -53,6 +53,7 @@ export interface WorkoutExercise {
   exerciseId: number;
   exerciseName: string;
   muscleGroup: MuscleGroup;
+  trackingType?: TrackingType; // optional – depends on backend version
   exerciseOrder: number;
   sets: WorkoutSet[];
 }

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { workoutApi } from '../../api/workout';
-import type { WorkoutSession } from '../../types';
+import { statisticsApi } from '../../api/statistics';
+import type { PrData, TrackingType, WorkoutSession } from '../../types';
 import Button from '../../components/common/Button';
-import Badge, { statusVariant } from '../../components/common/Badge';
 import { SkeletonCard } from '../../components/common/LoadingSpinner';
 import ErrorState from '../../components/common/ErrorState';
 
@@ -17,6 +17,19 @@ type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 /** Debounced set values stored separately from session to avoid focus loss */
 type DraftEntry = { weight: number; reps: number };
 
+/** Returns the set columns to display based on exercise tracking type */
+function getSetColumns(tt?: TrackingType): Array<'weight' | 'reps'> {
+  if (tt === 'REPS_ONLY') return ['reps'];
+  if (tt === 'DURATION') return ['reps'];
+  if (tt === 'DISTANCE') return ['weight'];
+  return ['weight', 'reps']; // WEIGHT_REPS or unknown
+}
+
+function colLabel(col: 'weight' | 'reps', tt?: TrackingType): string {
+  if (col === 'weight') return tt === 'DISTANCE' ? '거리(km)' : '중량 kg';
+  return tt === 'DURATION' ? '시간(분)' : '횟수';
+}
+
 export default function WorkoutSessionPage() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
@@ -27,6 +40,8 @@ export default function WorkoutSessionPage() {
   const [memo, setMemo] = useState('');
   const [completing, setCompleting] = useState(false);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+  const [prMap, setPrMap] = useState<Record<number, number>>({});
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null); // exerciseId of open 3-dot menu
 
   // draftDisplay: drives input values (triggers re-render)
   // draftLatest: ref copy for debounce closures (always fresh)
@@ -54,6 +69,17 @@ export default function WorkoutSessionPage() {
   }, [sessionId]);
 
   useEffect(() => { load(); }, [load]);
+
+  // Load PR data to show PR chip next to exercise name
+  useEffect(() => {
+    statisticsApi.getPRs()
+      .then((r) => {
+        const map: Record<number, number> = {};
+        (r.data.data as PrData[]).forEach((p) => { map[p.exerciseId] = p.maxWeight; });
+        setPrMap(map);
+      })
+      .catch(() => {}); // non-critical; silently ignore
+  }, []);
 
   const markSaved = () => {
     setSaveStatus('saved');
@@ -176,181 +202,212 @@ export default function WorkoutSessionPage() {
 
   if (loading) return (
     <div className="px-4 py-4 space-y-3">
-      <SkeletonCard />
-      <SkeletonCard lines={4} />
-      <SkeletonCard lines={4} />
+      <SkeletonCard /><SkeletonCard lines={4} /><SkeletonCard lines={4} />
     </div>
   );
   if (error || !session) return <ErrorState onRetry={load} />;
 
   const isInProgress = session.status === 'IN_PROGRESS';
-  const isPlanned = session.status === 'PLANNED';
-  const isCompleted = session.status === 'COMPLETED';
+  const isPlanned    = session.status === 'PLANNED';
+  const isCompleted  = session.status === 'COMPLETED';
 
   return (
-    <div className="pb-32">
-      {/* ── Sticky Header ── */}
+    <div className="pb-40">
+
+      {/* ─── Sticky header ── */}
       <div className="sticky top-0 bg-white border-b border-gray-100 z-30">
-        <div className="flex items-center gap-3 px-4 py-3 max-w-lg mx-auto">
+        <div className="flex items-center px-4 py-3 gap-2 max-w-lg mx-auto">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center justify-center w-9 h-9 rounded-xl bg-gray-50 text-gray-600 shrink-0"
+            className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 text-gray-600 shrink-0"
             aria-label="뒤로가기"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
               <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
             </svg>
           </button>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-gray-900 truncate leading-tight">
-              {session.displayName || '운동'}
-            </p>
-            <p className="text-xs text-gray-400">{session.workoutDate}</p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Auto-save status */}
-            {saveStatus === 'saving' && (
-              <span className="text-xs text-gray-400">저장 중...</span>
+          <p className="flex-1 text-center text-base font-semibold text-gray-900">운동 기록</p>
+          <div className="shrink-0 min-w-[56px] text-right text-xs">
+            {saveStatus === 'saving' && <span className="text-gray-400">저장 중…</span>}
+            {saveStatus === 'saved'  && (
+              <span className="text-emerald-600 flex items-center justify-end gap-0.5">
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                  <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                </svg>저장됨
+              </span>
             )}
-            {saveStatus === 'saved' && (
-              <span className="text-xs text-emerald-600">저장됨 ✓</span>
-            )}
-            {saveStatus === 'error' && (
-              <span className="text-xs text-red-500">저장 실패</span>
-            )}
-            <Badge variant={statusVariant(session.status)} />
+            {saveStatus === 'error' && <span className="text-red-500">저장 실패</span>}
           </div>
         </div>
       </div>
 
-      <div className="px-4 py-4 space-y-3">
-        {/* ── Exercise List ── */}
-        {session.exercises.map((ex) => (
-          <div key={ex.workoutExerciseId} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            {/* Exercise header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
-              <div>
-                <p className="font-semibold text-gray-900 leading-tight">{ex.exerciseName}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{MUSCLE_LABELS[ex.muscleGroup] ?? ex.muscleGroup}</p>
-              </div>
-            </div>
+      {/* ─── Session info row ── */}
+      <div className="px-4 pt-4 pb-2 flex items-center gap-2 flex-wrap">
+        <p className="text-xl font-bold text-gray-900">{session.displayName || '운동'}</p>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+          isInProgress ? 'bg-emerald-100 text-emerald-700' :
+          isCompleted  ? 'bg-gray-100 text-gray-600'      : 'bg-sky-50 text-sky-700'
+        }`}>
+          {isInProgress ? '진행 중' : isCompleted ? '완료' : '계획'}
+        </span>
+        <span className="text-sm text-secondary ml-auto">{session.workoutDate}</span>
+      </div>
 
-            {/* Set table */}
-            <div className="px-3 pt-2 pb-3">
-              {/* Column headers */}
-              <div className="grid grid-cols-[32px_1fr_1fr_44px] gap-1 mb-1.5 px-1">
-                <span className="text-[11px] text-gray-400 text-center">세트</span>
-                <span className="text-[11px] text-gray-400 text-center">중량 (kg)</span>
-                <span className="text-[11px] text-gray-400 text-center">횟수</span>
-                <span />
-              </div>
-
-              {/* Set rows */}
-              {ex.sets.map((set) => {
-                const w = getWeight(set.workoutSetId, set.weight);
-                const r = getReps(set.workoutSetId, set.reps);
-                const done = set.completed;
-                return (
-                  <div
-                    key={set.workoutSetId}
-                    className={`grid grid-cols-[32px_1fr_1fr_44px] gap-1 items-center mb-1 rounded-xl px-1 py-1.5
-                      ${done ? 'bg-emerald-50' : 'hover:bg-gray-50'}`}
-                  >
-                    {/* Set number */}
-                    <span className={`text-xs font-medium text-center ${done ? 'text-emerald-600' : 'text-gray-400'}`}>
-                      {set.setOrder}
-                    </span>
-
-                    {/* Weight input */}
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      className={`w-full text-center text-sm font-medium rounded-lg py-2 outline-none border transition-colors
-                        ${done
-                          ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
-                          : 'bg-white border-gray-200 text-gray-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-100'
-                        } ${isCompleted ? 'cursor-default' : ''}`}
-                      value={w}
-                      step="0.5"
-                      disabled={isCompleted}
-                      onChange={(e) => handleSetInput(
-                        ex.workoutExerciseId, set.workoutSetId, 'weight', e.target.value,
-                        set.completed, set.weight, set.reps
-                      )}
-                    />
-
-                    {/* Reps input */}
-                    <input
-                      type="number"
-                      inputMode="numeric"
-                      className={`w-full text-center text-sm font-medium rounded-lg py-2 outline-none border transition-colors
-                        ${done
-                          ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
-                          : 'bg-white border-gray-200 text-gray-900 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-100'
-                        } ${isCompleted ? 'cursor-default' : ''}`}
-                      value={r}
-                      disabled={isCompleted}
-                      onChange={(e) => handleSetInput(
-                        ex.workoutExerciseId, set.workoutSetId, 'reps', e.target.value,
-                        set.completed, set.weight, set.reps
-                      )}
-                    />
-
-                    {/* Complete toggle */}
-                    <button
-                      disabled={isCompleted}
-                      onClick={() => !isCompleted && handleToggleSet(
-                        ex.workoutExerciseId, set.workoutSetId, set.completed, set.weight, set.reps
-                      )}
-                      className={`flex items-center justify-center w-9 h-9 mx-auto rounded-full border-2 transition-colors
-                        ${done
-                          ? 'bg-emerald-600 border-emerald-600 text-white'
-                          : 'border-gray-300 text-transparent hover:border-emerald-400'
-                        } ${isCompleted ? 'cursor-default' : 'cursor-pointer'}`}
-                      aria-label={done ? '완료 취소' : '완료'}
-                    >
-                      <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                        <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                );
-              })}
-
-              {/* Add set button */}
-              {!isCompleted && (
-                <button
-                  onClick={() => handleAddSet(ex.workoutExerciseId)}
-                  className="w-full mt-2 py-2 text-sm text-emerald-700 border border-dashed border-emerald-300 rounded-xl hover:bg-emerald-50 transition-colors"
-                >
-                  + 세트 추가
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
-
-        {/* ── Add Exercise ── */}
-        {!isCompleted && (
+      {/* ─── Action buttons ── */}
+      {!isCompleted && (
+        <div className="px-4 pb-3 grid grid-cols-2 gap-2">
           <button
             onClick={() => navigate(`/exercises/select?sessionId=${session.sessionId}`)}
-            className="w-full py-4 border-2 border-dashed border-gray-200 rounded-2xl text-sm text-gray-400 hover:border-emerald-300 hover:text-emerald-600 transition-colors flex items-center justify-center gap-2"
+            className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 min-h-[44px]"
           >
-            <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+            <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-emerald-700">
               <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
             </svg>
             운동 추가
           </button>
-        )}
+          {/* 기존 운동 불러오기: favorites 필터로 연결 (별도 API 미구현, 보고 참조) */}
+          <button
+            onClick={() => navigate(`/exercises/select?sessionId=${session.sessionId}&mode=recent`)}
+            className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 min-h-[44px]"
+          >
+            <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-gray-500">
+              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+              <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" clipRule="evenodd" />
+            </svg>
+            기존 운동 불러오기
+          </button>
+        </div>
+      )}
 
-        {/* ── Memo ── */}
+      {/* ─── Exercise list ── */}
+      <div className="px-4 space-y-3">
+        {session.exercises.map((ex) => {
+          const cols     = getSetColumns(ex.trackingType);
+          const hasW     = cols.includes('weight');
+          const hasR     = cols.includes('reps');
+          const gridCls  = cols.length === 2
+            ? 'grid-cols-[32px_1fr_1fr_44px]'
+            : 'grid-cols-[32px_1fr_44px]';
+          const prWeight = prMap[ex.exerciseId];
+
+          return (
+            <div key={ex.workoutExerciseId} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              {/* Exercise header */}
+              <div className="flex items-center px-4 py-3 border-b border-gray-50 gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-semibold text-gray-900">{ex.exerciseName}</p>
+                    {prWeight != null && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700">
+                        PR {prWeight} kg
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-secondary mt-0.5">{MUSCLE_LABELS[ex.muscleGroup] ?? ex.muscleGroup}</p>
+                </div>
+                {!isCompleted && (
+                  <div className="relative shrink-0">
+                    <button
+                      onClick={() => setOpenMenuId(openMenuId === ex.workoutExerciseId ? null : ex.workoutExerciseId)}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400"
+                    >
+                      <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                      </svg>
+                    </button>
+                    {openMenuId === ex.workoutExerciseId && (
+                      <>
+                        <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
+                        <div className="absolute right-0 top-9 z-20 bg-white rounded-xl shadow-lg border border-gray-100 py-1 min-w-[100px]">
+                          <button
+                            className="w-full px-4 py-2 text-sm text-red-500 hover:bg-red-50 text-left"
+                            onClick={async () => {
+                              setOpenMenuId(null);
+                              try {
+                                await workoutApi.removeExercise(session.sessionId, ex.workoutExerciseId);
+                                setSession((p) => p ? { ...p, exercises: p.exercises.filter((e) => e.workoutExerciseId !== ex.workoutExerciseId) } : p);
+                              } catch { /* silent */ }
+                            }}
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Set table */}
+              <div className="px-3 pt-2 pb-3">
+                {/* Column headers */}
+                <div className={`grid ${gridCls} gap-1 mb-1.5 px-0.5`}>
+                  <span className="text-[11px] text-secondary text-center">세트</span>
+                  {hasW && <span className="text-[11px] text-secondary text-center">{colLabel('weight', ex.trackingType)}</span>}
+                  {hasR && <span className="text-[11px] text-secondary text-center">{colLabel('reps', ex.trackingType)}</span>}
+                  <span />
+                </div>
+
+                {/* Set rows */}
+                {ex.sets.map((set) => {
+                  const w    = getWeight(set.workoutSetId, set.weight);
+                  const r    = getReps(set.workoutSetId, set.reps);
+                  const done = set.completed;
+                  const inCls = `w-full text-center text-sm font-medium rounded-lg py-2 outline-none border transition-colors ${
+                    done
+                      ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
+                      : 'bg-white border-gray-200 text-gray-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-50'
+                  } ${isCompleted ? 'cursor-default' : ''}`;
+                  return (
+                    <div key={set.workoutSetId} className={`grid ${gridCls} gap-1 items-center mb-1 rounded-xl px-0.5 py-1.5 ${done ? 'bg-emerald-50' : 'hover:bg-gray-50'}`}>
+                      <span className={`text-xs font-semibold text-center ${done ? 'text-emerald-600' : 'text-secondary'}`}>{set.setOrder}</span>
+                      {hasW && (
+                        <input type="number" inputMode="decimal" className={inCls} value={w} step="0.5" disabled={isCompleted}
+                          onChange={(e) => handleSetInput(ex.workoutExerciseId, set.workoutSetId, 'weight', e.target.value, set.completed, set.weight, set.reps)} />
+                      )}
+                      {hasR && (
+                        <input type="number" inputMode="numeric" className={inCls} value={r} disabled={isCompleted}
+                          onChange={(e) => handleSetInput(ex.workoutExerciseId, set.workoutSetId, 'reps', e.target.value, set.completed, set.weight, set.reps)} />
+                      )}
+                      <button
+                        disabled={isCompleted}
+                        onClick={() => !isCompleted && handleToggleSet(ex.workoutExerciseId, set.workoutSetId, set.completed, set.weight, set.reps)}
+                        className={`flex items-center justify-center w-9 h-9 mx-auto rounded-lg border-2 transition-colors ${
+                          done ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-gray-300 text-transparent hover:border-emerald-400'
+                        } ${isCompleted ? 'cursor-default' : 'cursor-pointer'}`}
+                        aria-label={done ? '완료 취소' : '완료'}
+                      >
+                        <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                          <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  );
+                })}
+
+                {/* Add set */}
+                {!isCompleted && (
+                  <button
+                    onClick={() => handleAddSet(ex.workoutExerciseId)}
+                    className="w-full mt-2 py-2.5 text-sm font-medium text-emerald-700 rounded-xl hover:bg-emerald-50 transition-colors"
+                  >
+                    + 세트 추가
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+
+        {/* ─── Memo ── */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
           <p className="text-sm font-semibold text-gray-700 mb-2">메모</p>
           <textarea
-            className={`w-full text-sm text-gray-700 resize-none outline-none bg-transparent leading-relaxed
-              ${isCompleted ? 'cursor-default text-gray-500' : 'placeholder-gray-300'}`}
+            className={`w-full text-sm resize-none outline-none bg-transparent leading-relaxed ${
+              isCompleted ? 'text-gray-500 cursor-default' : 'text-gray-700 placeholder-gray-300'
+            }`}
             rows={3}
-            placeholder="운동 메모를 입력하세요..."
+            placeholder="오늘 운동은 어땠나요?"
             value={memo}
             disabled={isCompleted}
             onChange={(e) => handleMemoChange(e.target.value)}
@@ -358,23 +415,11 @@ export default function WorkoutSessionPage() {
         </div>
       </div>
 
-      {/* ── Fixed Action Bar ── */}
+      {/* ─── Fixed bottom action ── */}
       <div className="fixed bottom-16 left-0 right-0 max-w-lg mx-auto px-4 py-3 bg-white border-t border-gray-100 z-20">
-        {isPlanned && (
-          <Button fullWidth size="lg" onClick={handleStart}>
-            운동 시작
-          </Button>
-        )}
-        {isInProgress && (
-          <Button fullWidth size="lg" onClick={handleComplete} loading={completing} variant="primary">
-            운동 종료
-          </Button>
-        )}
-        {isCompleted && (
-          <Button fullWidth size="lg" variant="secondary" onClick={() => navigate('/history')}>
-            이력 보기
-          </Button>
-        )}
+        {isPlanned    && <Button fullWidth size="lg" onClick={handleStart}>운동 시작</Button>}
+        {isInProgress && <Button fullWidth size="lg" onClick={handleComplete} loading={completing}>운동 종료</Button>}
+        {isCompleted  && <Button fullWidth size="lg" variant="secondary" onClick={() => navigate('/history')}>이력 보기</Button>}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { historyApi } from '../api/history';
 import type { WorkoutSessionSummary } from '../types';
 import Card from '../components/common/Card';
 import Badge, { statusVariant } from '../components/common/Badge';
+import PageHeader from '../components/common/PageHeader';
 import { SkeletonCard } from '../components/common/LoadingSpinner';
 import ErrorState from '../components/common/ErrorState';
 import EmptyState from '../components/common/EmptyState';
@@ -30,9 +31,10 @@ export default function HistoryPage() {
   useEffect(() => { load(); }, []);
 
   return (
-    <div className="px-4 pt-5 pb-6">
-      <h1 className="text-xl font-bold text-gray-900 mb-4">운동 이력</h1>
+    <div className="pb-6">
+      <PageHeader title="운동 이력" onBack={false} />
 
+      <div className="px-4">
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
@@ -41,7 +43,7 @@ export default function HistoryPage() {
         <ErrorState onRetry={load} />
       ) : !sessions.length ? (
         <EmptyState
-          message="운동 기록이 없습니다."
+          message="운동 이력이 없습니다"
           description="운동을 시작해 기록을 남겨보세요."
           actionLabel="운동 시작하기"
           onAction={() => navigate('/workout/new')}
@@ -73,6 +75,7 @@ export default function HistoryPage() {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

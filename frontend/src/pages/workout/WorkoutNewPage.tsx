@@ -51,7 +51,7 @@ export default function WorkoutNewPage() {
                   className={`py-3 px-4 rounded-xl text-sm font-medium border-2 transition-colors text-left
                     ${status === val
                       ? 'bg-emerald-700 text-white border-emerald-700'
-                      : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                      : 'bg-gray-100 text-gray-700 border-transparent hover:bg-gray-200'
                     }`}
                 >
                   <span className="block font-semibold">{label}</span>

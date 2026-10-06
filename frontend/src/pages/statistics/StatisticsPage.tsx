@@ -91,11 +91,11 @@ export default function StatisticsPage() {
                 </Card>
                 <Card className="text-center">
                   <p className="text-xs text-gray-400">연속 운동</p>
-                  <p className="text-2xl font-bold text-green-600">{summary.currentStreak}일</p>
+                  <p className="text-2xl font-bold text-emerald-700">{summary.currentStreak}일</p>
                 </Card>
                 <Card className="text-center">
                   <p className="text-xs text-gray-400">최장 연속</p>
-                  <p className="text-2xl font-bold text-orange-600">{summary.longestStreak}일</p>
+                  <p className="text-2xl font-bold text-gray-700">{summary.longestStreak}일</p>
                 </Card>
               </div>
               {summary.avgDurationMinutes && (

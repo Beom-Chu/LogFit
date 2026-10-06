@@ -4,6 +4,7 @@ import { exerciseApi } from '../../api/exercises';
 import type { MuscleGroup, TrackingType } from '../../types';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import PageHeader from '../../components/common/PageHeader';
 
 const MUSCLE_OPTIONS: { label: string; value: MuscleGroup }[] = [
   { label: '가슴', value: 'CHEST' }, { label: '등', value: 'BACK' },
@@ -48,13 +49,10 @@ export default function ExerciseCreatePage() {
   };
 
   return (
-    <div className="px-4 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-100">←</button>
-        <h2 className="text-lg font-bold">커스텀 운동 생성</h2>
-      </div>
+    <div className="min-h-screen bg-[#F5F7F8]">
+      <PageHeader title="커스텀 운동 생성" />
 
-      <div className="space-y-5">
+      <div className="px-4 space-y-5">
         <Input label="운동명" value={name} onChange={(e) => setName(e.target.value)} placeholder="원암 케이블 로우" error={error} />
 
         <div>

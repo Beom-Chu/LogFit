@@ -4,6 +4,8 @@ import { exerciseApi } from '../../api/exercises';
 import type { Exercise, MuscleGroup } from '../../types';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Button from '../../components/common/Button';
+import EmptyState from '../../components/common/EmptyState';
+import PageHeader from '../../components/common/PageHeader';
 
 const MUSCLE_GROUPS: { label: string; value: MuscleGroup | 'ALL' }[] = [
   { label: '전체', value: 'ALL' },
@@ -63,30 +65,30 @@ export default function ExerciseSelectPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white">
-      <div className="px-4 py-4 border-b border-gray-100">
-        <div className="flex items-center gap-3 mb-4">
-          <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-100">←</button>
-          <h2 className="text-lg font-bold">운동 선택</h2>
-        </div>
-        <input
-          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-blue-500"
-          placeholder="운동 검색..."
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          onKeyDown={handleKeyDown}
-        />
-        <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
-          {MUSCLE_GROUPS.map((g) => (
-            <button
-              key={g.value}
-              onClick={() => setMuscle(g.value)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors
-                ${muscle === g.value ? 'bg-emerald-700 text-white' : 'bg-gray-100 text-gray-600'}`}
-            >
-              {g.label}
-            </button>
-          ))}
+    <div className="flex flex-col h-screen bg-[#F5F7F8]">
+      <div className="bg-white border-b border-gray-100">
+        <PageHeader title="운동 선택" />
+        <div className="px-4 pb-4">
+          <input
+            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none transition-colors
+              focus:border-emerald-600 focus:ring-2 focus:ring-emerald-50"
+            placeholder="운동 검색..."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+            {MUSCLE_GROUPS.map((g) => (
+              <button
+                key={g.value}
+                onClick={() => setMuscle(g.value)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+                  ${muscle === g.value ? 'bg-emerald-700 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              >
+                {g.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -94,30 +96,32 @@ export default function ExerciseSelectPage() {
         {loading ? (
           <LoadingSpinner className="h-48" />
         ) : exercises.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 gap-4">
-            <p className="text-gray-500 text-sm">검색 결과가 없습니다.</p>
-            <Button onClick={() => navigate('/exercises/new')}>새 운동 만들기</Button>
-          </div>
+          <EmptyState
+            message="검색 결과가 없습니다."
+            description="다른 키워드로 검색하거나 새 운동을 만들어보세요."
+            actionLabel="새 운동 만들기"
+            onAction={() => navigate('/exercises/new')}
+          />
         ) : (
-          <div className="divide-y divide-gray-50">
+          <div className="bg-white divide-y divide-gray-50">
             {exercises.map((ex) => (
               <button
                 key={ex.exerciseId}
                 onClick={() => handleSelect(ex.exerciseId)}
-                className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 text-left"
+                className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 text-left min-h-[56px]"
               >
                 <div>
                   <p className="text-sm font-medium text-gray-900">{ex.name}</p>
-                  <p className="text-xs text-gray-400">{MUSCLE_LABELS[ex.muscleGroup] || ex.muscleGroup}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{MUSCLE_LABELS[ex.muscleGroup] || ex.muscleGroup}</p>
                 </div>
-                {ex.isFavorite && <span className="text-yellow-400">★</span>}
+                {ex.isFavorite && <span className="text-yellow-400 text-base">★</span>}
               </button>
             ))}
           </div>
         )}
       </div>
 
-      <div className="px-4 py-3 border-t border-gray-100">
+      <div className="px-4 py-3 bg-white border-t border-gray-100">
         <Button variant="ghost" fullWidth onClick={() => navigate('/exercises/new')}>
           + 새 운동 만들기
         </Button>

@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import { bodyApi } from '../../api/body';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import PageHeader from '../../components/common/PageHeader';
 
 export default function BodyWeightFormPage() {
   const navigate = useNavigate();
@@ -28,13 +29,10 @@ export default function BodyWeightFormPage() {
   };
 
   return (
-    <div className="px-4 py-6">
-      <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-100">←</button>
-        <h2 className="text-lg font-bold">체중 입력</h2>
-      </div>
+    <div className="min-h-screen bg-[#F5F7F8] pb-8">
+      <PageHeader title="체중 입력" />
 
-      <div className="space-y-5">
+      <div className="px-4 space-y-5">
         <Input label="체중 (kg)" type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="77.3" step="0.1" error={error} />
         <Input label="측정 날짜" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         <Button fullWidth size="lg" onClick={handleSave} loading={loading}>저장</Button>
