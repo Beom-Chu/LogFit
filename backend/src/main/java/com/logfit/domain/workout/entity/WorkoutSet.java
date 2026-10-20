@@ -34,20 +34,31 @@ public class WorkoutSet extends BaseEntity {
     private int reps;
 
     @Column(nullable = false)
+    private int durationSeconds;
+
+    @Column(name = "distance_km", precision = 7, scale = 2, nullable = false)
+    private BigDecimal distanceKm;
+
+    @Column(nullable = false)
     private boolean completed;
 
     @Builder
-    public WorkoutSet(WorkoutExercise workoutExercise, int setOrder, BigDecimal weight, int reps) {
+    public WorkoutSet(WorkoutExercise workoutExercise, int setOrder, BigDecimal weight, int reps,
+                      int durationSeconds, BigDecimal distanceKm) {
         this.workoutExercise = workoutExercise;
         this.setOrder = setOrder;
         this.weight = weight != null ? weight : BigDecimal.ZERO;
         this.reps = reps;
+        this.durationSeconds = durationSeconds;
+        this.distanceKm = distanceKm != null ? distanceKm : BigDecimal.ZERO;
         this.completed = false;
     }
 
-    public void update(BigDecimal weight, int reps) {
+    public void update(BigDecimal weight, int reps, int durationSeconds, BigDecimal distanceKm) {
         this.weight = weight != null ? weight : BigDecimal.ZERO;
         this.reps = reps;
+        this.durationSeconds = durationSeconds;
+        this.distanceKm = distanceKm != null ? distanceKm : BigDecimal.ZERO;
     }
 
     public void toggleComplete() {

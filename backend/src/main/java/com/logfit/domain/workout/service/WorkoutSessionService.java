@@ -96,9 +96,7 @@ public class WorkoutSessionService {
                 .map(o -> o + 1).orElse(1);
         WorkoutExercise workoutExercise = WorkoutExercise.builder()
                 .workoutSession(session)
-                .exerciseId(exercise.getExerciseId())
-                .exerciseNameSnapshot(exercise.getName())
-                .muscleGroupSnapshot(exercise.getMuscleGroup())
+                .exercise(exercise)
                 .exerciseOrder(nextOrder)
                 .build();
         workoutExerciseRepository.save(workoutExercise);
@@ -125,6 +123,8 @@ public class WorkoutSessionService {
                 .setOrder(nextOrder)
                 .weight(request.getWeight() != null ? request.getWeight() : BigDecimal.ZERO)
                 .reps(request.getReps())
+                .durationSeconds(request.getDurationSeconds())
+                .distanceKm(request.getDistanceKm())
                 .build();
         workoutSetRepository.save(set);
         return new WorkoutSetResponse(set);
@@ -133,7 +133,7 @@ public class WorkoutSessionService {
     @Transactional
     public WorkoutSetResponse updateSet(Long userId, Long setId, UpdateSetRequest request) {
         WorkoutSet set = getSetOwned(userId, setId);
-        set.update(request.getWeight(), request.getReps());
+        set.update(request.getWeight(), request.getReps(), request.getDurationSeconds(), request.getDistanceKm());
         return new WorkoutSetResponse(set);
     }
 

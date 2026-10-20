@@ -1,5 +1,6 @@
 package com.logfit.domain.history.dto;
 
+import com.logfit.domain.exercise.entity.TrackingType;
 import com.logfit.domain.workout.entity.WorkoutExercise;
 import com.logfit.domain.workout.entity.WorkoutSession;
 import com.logfit.domain.workout.entity.WorkoutSet;
@@ -32,11 +33,13 @@ public class WorkoutHistoryDetailResponse {
     public static class ExerciseDetail {
         private final Long workoutExerciseId;
         private final String exerciseName;
+        private final TrackingType trackingType;
         private final List<SetDetail> sets;
 
         public ExerciseDetail(WorkoutExercise we) {
             this.workoutExerciseId = we.getWorkoutExerciseId();
             this.exerciseName = we.getExerciseNameSnapshot();
+            this.trackingType = we.getTrackingTypeSnapshot();
             this.sets = we.getWorkoutSets().stream().map(SetDetail::new).toList();
         }
     }
@@ -46,12 +49,16 @@ public class WorkoutHistoryDetailResponse {
         private final int setOrder;
         private final BigDecimal weight;
         private final int reps;
+        private final int durationSeconds;
+        private final BigDecimal distanceKm;
         private final boolean completed;
 
         public SetDetail(WorkoutSet ws) {
             this.setOrder = ws.getSetOrder();
             this.weight = ws.getWeight();
             this.reps = ws.getReps();
+            this.durationSeconds = ws.getDurationSeconds();
+            this.distanceKm = ws.getDistanceKm();
             this.completed = ws.isCompleted();
         }
     }

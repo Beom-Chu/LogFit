@@ -9,5 +9,10 @@ import java.math.BigDecimal;
 public class UpdateSetRequest {
     @PositiveOrZero
     private BigDecimal weight;
+    @PositiveOrZero
     private int reps;
+    @PositiveOrZero
+    private int durationSeconds;
+    @PositiveOrZero
+    private BigDecimal distanceKm;
 }

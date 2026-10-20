@@ -29,6 +29,10 @@ public class QWorkoutSet extends EntityPathBase<WorkoutSet> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final NumberPath<java.math.BigDecimal> distanceKm = createNumber("distanceKm", java.math.BigDecimal.class);
+
+    public final NumberPath<Integer> durationSeconds = createNumber("durationSeconds", Integer.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 

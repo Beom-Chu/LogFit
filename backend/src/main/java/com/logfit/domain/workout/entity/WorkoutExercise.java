@@ -1,7 +1,9 @@
 package com.logfit.domain.workout.entity;
 
 import com.logfit.common.BaseEntity;
+import com.logfit.domain.exercise.entity.Exercise;
 import com.logfit.domain.exercise.entity.MuscleGroup;
+import com.logfit.domain.exercise.entity.TrackingType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,12 +31,20 @@ public class WorkoutExercise extends BaseEntity {
     @Column(name = "exercise_id", nullable = false)
     private Long exerciseId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exercise_id", insertable = false, updatable = false)
+    private Exercise exercise;
+
     @Column(nullable = false, length = 100)
     private String exerciseNameSnapshot;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private MuscleGroup muscleGroupSnapshot;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private TrackingType trackingTypeSnapshot;
 
     @Column(nullable = false)
     private int exerciseOrder;
@@ -44,12 +54,13 @@ public class WorkoutExercise extends BaseEntity {
     private List<WorkoutSet> workoutSets = new ArrayList<>();
 
     @Builder
-    public WorkoutExercise(WorkoutSession workoutSession, Long exerciseId,
-                           String exerciseNameSnapshot, MuscleGroup muscleGroupSnapshot, int exerciseOrder) {
+    public WorkoutExercise(WorkoutSession workoutSession, Exercise exercise, int exerciseOrder) {
         this.workoutSession = workoutSession;
-        this.exerciseId = exerciseId;
-        this.exerciseNameSnapshot = exerciseNameSnapshot;
-        this.muscleGroupSnapshot = muscleGroupSnapshot;
+        this.exercise = exercise;
+        this.exerciseId = exercise.getExerciseId();
+        this.exerciseNameSnapshot = exercise.getName();
+        this.muscleGroupSnapshot = exercise.getMuscleGroup();
+        this.trackingTypeSnapshot = exercise.getTrackingType();
         this.exerciseOrder = exerciseOrder;
     }
 }

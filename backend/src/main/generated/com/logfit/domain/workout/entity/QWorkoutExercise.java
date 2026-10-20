@@ -27,6 +27,8 @@ public class QWorkoutExercise extends EntityPathBase<WorkoutExercise> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final com.logfit.domain.exercise.entity.QExercise exercise;
+
     public final NumberPath<Long> exerciseId = createNumber("exerciseId", Long.class);
 
     public final StringPath exerciseNameSnapshot = createString("exerciseNameSnapshot");
@@ -37,6 +39,8 @@ public class QWorkoutExercise extends EntityPathBase<WorkoutExercise> {
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final EnumPath<com.logfit.domain.exercise.entity.MuscleGroup> muscleGroupSnapshot = createEnum("muscleGroupSnapshot", com.logfit.domain.exercise.entity.MuscleGroup.class);
+
+    public final EnumPath<com.logfit.domain.exercise.entity.TrackingType> trackingTypeSnapshot = createEnum("trackingTypeSnapshot", com.logfit.domain.exercise.entity.TrackingType.class);
 
     public final NumberPath<Long> workoutExerciseId = createNumber("workoutExerciseId", Long.class);
 
@@ -62,6 +66,7 @@ public class QWorkoutExercise extends EntityPathBase<WorkoutExercise> {
 
     public QWorkoutExercise(Class<? extends WorkoutExercise> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.exercise = inits.isInitialized("exercise") ? new com.logfit.domain.exercise.entity.QExercise(forProperty("exercise")) : null;
         this.workoutSession = inits.isInitialized("workoutSession") ? new QWorkoutSession(forProperty("workoutSession")) : null;
     }
 

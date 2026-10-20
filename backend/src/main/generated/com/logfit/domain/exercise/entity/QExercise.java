@@ -26,6 +26,8 @@ public class QExercise extends EntityPathBase<Exercise> {
 
     public final NumberPath<Long> exerciseId = createNumber("exerciseId", Long.class);
 
+    public final StringPath imageUrl = createString("imageUrl");
+
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
     //inherited
@@ -38,6 +40,8 @@ public class QExercise extends EntityPathBase<Exercise> {
     public final NumberPath<Long> ownerUserId = createNumber("ownerUserId", Long.class);
 
     public final EnumPath<ExerciseSourceType> sourceType = createEnum("sourceType", ExerciseSourceType.class);
+
+    public final StringPath stableKey = createString("stableKey");
 
     public final EnumPath<TrackingType> trackingType = createEnum("trackingType", TrackingType.class);
 

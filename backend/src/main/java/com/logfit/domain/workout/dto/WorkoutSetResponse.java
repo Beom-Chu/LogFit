@@ -11,6 +11,8 @@ public class WorkoutSetResponse {
     private final int setOrder;
     private final BigDecimal weight;
     private final int reps;
+    private final int durationSeconds;
+    private final BigDecimal distanceKm;
     private final boolean completed;
 
     public WorkoutSetResponse(WorkoutSet set) {
@@ -18,6 +20,8 @@ public class WorkoutSetResponse {
         this.setOrder = set.getSetOrder();
         this.weight = set.getWeight();
         this.reps = set.getReps();
+        this.durationSeconds = set.getDurationSeconds();
+        this.distanceKm = set.getDistanceKm();
         this.completed = set.isCompleted();
     }
 }

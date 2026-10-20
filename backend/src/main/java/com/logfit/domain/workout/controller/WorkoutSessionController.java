@@ -111,7 +111,7 @@ public class WorkoutSessionController {
     public ApiResponse<WorkoutSetResponse> addSet(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long workoutExerciseId,
-            @RequestBody AddSetRequest request) {
+            @Valid @RequestBody AddSetRequest request) {
         return ApiResponse.success(workoutSessionService.addSet(userId, workoutExerciseId, request));
     }
 
@@ -120,7 +120,7 @@ public class WorkoutSessionController {
     public ApiResponse<WorkoutSetResponse> updateSet(
             @AuthenticationPrincipal Long userId,
             @PathVariable Long setId,
-            @RequestBody UpdateSetRequest request) {
+            @Valid @RequestBody UpdateSetRequest request) {
         return ApiResponse.success(workoutSessionService.updateSet(userId, setId, request));
     }
 
