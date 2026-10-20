@@ -1,5 +1,7 @@
 import api from './client';
-import type { WorkoutSession, WorkoutSessionSummary } from '../types';
+import type { WorkoutSession, WorkoutSessionSummary, WorkoutSet } from '../types';
+
+export type SetValues = Pick<WorkoutSet, 'weight' | 'reps' | 'durationSeconds' | 'distanceKm'>;
 
 export const workoutApi = {
   createSession: (data: { workoutDate: string; status?: string; memo?: string }) =>
@@ -14,12 +16,13 @@ export const workoutApi = {
   updateMemo: (id: number, memo: string) => api.patch<{ data: WorkoutSession }>(`/workout-sessions/${id}/memo`, { memo }),
   addExercise: (id: number, exerciseId: number) =>
     api.post<{ data: WorkoutSession }>(`/workout-sessions/${id}/exercises`, { exerciseId }),
-  removeExercise: (sessionId: number, workoutExerciseId: number) =>
-    api.delete(`/workout-sessions/${sessionId}/exercises/${workoutExerciseId}`),
-  addSet: (sessionId: number, workoutExerciseId: number, data: { weight: number; reps: number }) =>
-    api.post<{ data: WorkoutSession }>(`/workout-sessions/${sessionId}/exercises/${workoutExerciseId}/sets`, data),
-  updateSet: (sessionId: number, workoutExerciseId: number, setId: number, data: { weight: number; reps: number; completed: boolean }) =>
-    api.put<{ data: WorkoutSession }>(`/workout-sessions/${sessionId}/exercises/${workoutExerciseId}/sets/${setId}`, data),
-  deleteSet: (sessionId: number, workoutExerciseId: number, setId: number) =>
-    api.delete(`/workout-sessions/${sessionId}/exercises/${workoutExerciseId}/sets/${setId}`),
+  removeExercise: (workoutExerciseId: number) =>
+    api.delete(`/workout-exercises/${workoutExerciseId}`),
+  addSet: (workoutExerciseId: number, data: SetValues) =>
+    api.post<{ data: WorkoutSet }>(`/workout-exercises/${workoutExerciseId}/sets`, data),
+  updateSet: (setId: number, data: SetValues) =>
+    api.put<{ data: WorkoutSet }>(`/workout-sets/${setId}`, data),
+  toggleSetComplete: (setId: number) =>
+    api.patch<{ data: WorkoutSet }>(`/workout-sets/${setId}/complete`),
+  deleteSet: (setId: number) => api.delete(`/workout-sets/${setId}`),
 };

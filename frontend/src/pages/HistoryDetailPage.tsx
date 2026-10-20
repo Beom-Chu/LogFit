@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { historyApi } from '../api/history';
 import type { WorkoutHistoryDetail } from '../types';
+import { formatSet } from '../utils/workoutSet';
 import Card from '../components/common/Card';
 import PageHeader from '../components/common/PageHeader';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -68,9 +69,7 @@ export default function HistoryDetailPage() {
                     >
                       <span className="text-gray-400 w-5 text-center shrink-0">{set.setOrder}</span>
                       <span className="text-gray-200 shrink-0">|</span>
-                      <span className="font-medium text-gray-700 w-14 shrink-0">{set.weight}kg</span>
-                      <span className="text-gray-400 text-xs shrink-0">×</span>
-                      <span className="text-gray-700">{set.reps}회</span>
+                      <span className="font-medium text-gray-700">{formatSet(ex.trackingType, set)}</span>
                       {set.completed && (
                         <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-emerald-600 ml-auto shrink-0">
                           <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />

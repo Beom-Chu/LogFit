@@ -28,8 +28,7 @@ export type MuscleGroup =
   | 'CHEST' | 'BACK' | 'SHOULDER' | 'BICEPS' | 'TRICEPS' | 'FOREARM'
   | 'LEG' | 'GLUTE' | 'ABS' | 'CARDIO' | 'ARM' | 'ETC';
 export type TrackingType =
-  | 'WEIGHT_REPS' | 'REPS_ONLY' | 'ASSIST_WEIGHT_REPS' | 'TIME_ONLY' | 'DISTANCE_TIME'
-  | 'DURATION' | 'DISTANCE'; // legacy aliases kept for compatibility
+  | 'WEIGHT_REPS' | 'REPS_ONLY' | 'ASSIST_WEIGHT_REPS' | 'TIME_ONLY' | 'DISTANCE_TIME';
 export type ExerciseSourceType = 'SYSTEM' | 'CUSTOM';
 
 export interface Exercise {
@@ -46,10 +45,12 @@ export interface Exercise {
 export type WorkoutSessionStatus = 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED';
 
 export interface WorkoutSet {
-  workoutSetId: number;
+  setId: number;
   setOrder: number;
   weight: number;
   reps: number;
+  durationSeconds: number;
+  distanceKm: number;
   completed: boolean;
 }
 
@@ -58,7 +59,8 @@ export interface WorkoutExercise {
   exerciseId: number;
   exerciseName: string;
   muscleGroup: MuscleGroup;
-  trackingType?: TrackingType; // optional – depends on backend version
+  trackingType: TrackingType;
+  imageUrl?: string | null;
   exerciseOrder: number;
   sets: WorkoutSet[];
 }
@@ -137,6 +139,7 @@ export interface WorkoutHistoryDetail {
   exercises: Array<{
     workoutExerciseId: number;
     exerciseName: string;
-    sets: Array<{ setOrder: number; weight: number; reps: number; completed: boolean }>;
+    trackingType: TrackingType;
+    sets: Array<Omit<WorkoutSet, 'setId'>>;
   }>;
 }

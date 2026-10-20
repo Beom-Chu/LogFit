@@ -16,8 +16,9 @@ const MUSCLE_OPTIONS: { label: string; value: MuscleGroup }[] = [
 const TRACKING_OPTIONS: { label: string; value: TrackingType }[] = [
   { label: '중량+횟수', value: 'WEIGHT_REPS' },
   { label: '횟수만', value: 'REPS_ONLY' },
-  { label: '시간', value: 'DURATION' },
-  { label: '거리', value: 'DISTANCE' },
+  { label: '보조중량+횟수', value: 'ASSIST_WEIGHT_REPS' },
+  { label: '시간', value: 'TIME_ONLY' },
+  { label: '거리+시간', value: 'DISTANCE_TIME' },
 ];
 
 export default function ExerciseCreatePage() {

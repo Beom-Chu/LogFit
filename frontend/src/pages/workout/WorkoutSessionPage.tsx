@@ -2,7 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { workoutApi } from '../../api/workout';
 import { statisticsApi } from '../../api/statistics';
-import type { PrData, TrackingType, WorkoutSession } from '../../types';
+import type { SetValues } from '../../api/workout';
+import type { PrData, WorkoutSession, WorkoutSet } from '../../types';
+import { fieldLabel, minutesToSeconds, secondsToMinutes, SET_FIELDS, type SetField } from '../../utils/workoutSet';
 import Button from '../../components/common/Button';
 import { SkeletonCard } from '../../components/common/LoadingSpinner';
 import ErrorState from '../../components/common/ErrorState';
@@ -15,19 +17,37 @@ const MUSCLE_LABELS: Record<string, string> = {
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
 /** Debounced set values stored separately from session to avoid focus loss */
-type DraftEntry = { weight: number; reps: number };
+type DraftEntry = SetValues;
 
-/** Returns the set columns to display based on exercise tracking type */
-function getSetColumns(tt?: TrackingType): Array<'weight' | 'reps'> {
-  if (tt === 'REPS_ONLY') return ['reps'];
-  if (tt === 'DURATION') return ['reps'];
-  if (tt === 'DISTANCE') return ['weight'];
-  return ['weight', 'reps']; // WEIGHT_REPS or unknown
+const toDraft = (set: WorkoutSet): DraftEntry => ({
+  weight: set.weight,
+  reps: set.reps,
+  durationSeconds: set.durationSeconds,
+  distanceKm: set.distanceKm,
+});
+
+const GRID_COLS: Record<number, string> = {
+  1: 'grid-cols-[32px_1fr_44px]',
+  2: 'grid-cols-[32px_1fr_1fr_44px]',
+};
+
+function applyField(prev: DraftEntry, field: SetField, rawVal: string): DraftEntry {
+  const num = parseFloat(rawVal) || 0;
+  switch (field) {
+    case 'weight': return { ...prev, weight: num };
+    case 'reps': return { ...prev, reps: Math.round(num) };
+    case 'duration': return { ...prev, durationSeconds: minutesToSeconds(num) };
+    case 'distance': return { ...prev, distanceKm: num };
+  }
 }
 
-function colLabel(col: 'weight' | 'reps', tt?: TrackingType): string {
-  if (col === 'weight') return tt === 'DISTANCE' ? '거리(km)' : '중량 kg';
-  return tt === 'DURATION' ? '시간(분)' : '횟수';
+function fieldValue(draft: DraftEntry, field: SetField): number {
+  switch (field) {
+    case 'weight': return draft.weight;
+    case 'reps': return draft.reps;
+    case 'duration': return secondsToMinutes(draft.durationSeconds);
+    case 'distance': return draft.distanceKm;
+  }
 }
 
 export default function WorkoutSessionPage() {
@@ -88,36 +108,28 @@ export default function WorkoutSessionPage() {
   };
 
   // --- Set input: draft-first, debounced save (no focus loss) ---
-  const getWeight = (setId: number, fallback: number) =>
-    draftDisplay[setId]?.weight ?? fallback;
-  const getReps = (setId: number, fallback: number) =>
-    draftDisplay[setId]?.reps ?? fallback;
+  const getDraft = (set: WorkoutSet): DraftEntry => draftDisplay[set.setId] ?? toDraft(set);
+  const getLatestDraft = (set: WorkoutSet): DraftEntry => draftLatest.current[set.setId] ?? toDraft(set);
 
-  const handleSetInput = (
-    exId: number,
-    setId: number,
-    field: 'weight' | 'reps',
-    rawVal: string,
-    currentCompleted: boolean,
-    fallbackWeight: number,
-    fallbackReps: number,
-  ) => {
-    const num = parseFloat(rawVal) || 0;
-    const prev = draftLatest.current[setId] ?? { weight: fallbackWeight, reps: fallbackReps };
-    const next: DraftEntry = { ...prev, [field]: num };
-    draftLatest.current[setId] = next;
-    setDraftDisplay((d) => ({ ...d, [setId]: next }));
+  const replaceSet = (updated: WorkoutSet) =>
+    setSession((prev) => prev && {
+      ...prev,
+      exercises: prev.exercises.map((ex) => ({
+        ...ex,
+        sets: ex.sets.map((s) => (s.setId === updated.setId ? updated : s)),
+      })),
+    });
 
-    if (saveTimers.current[setId]) clearTimeout(saveTimers.current[setId]);
-    saveTimers.current[setId] = setTimeout(async () => {
-      if (!session) return;
+  const handleSetInput = (set: WorkoutSet, field: SetField, rawVal: string) => {
+    const next = applyField(getLatestDraft(set), field, rawVal);
+    draftLatest.current[set.setId] = next;
+    setDraftDisplay((d) => ({ ...d, [set.setId]: next }));
+
+    if (saveTimers.current[set.setId]) clearTimeout(saveTimers.current[set.setId]);
+    saveTimers.current[set.setId] = setTimeout(async () => {
       setSaveStatus('saving');
       try {
-        await workoutApi.updateSet(session.sessionId, exId, setId, {
-          weight: next.weight,
-          reps: next.reps,
-          completed: currentCompleted,
-        });
+        await workoutApi.updateSet(set.setId, next);
         markSaved();
       } catch {
         setSaveStatus('error');
@@ -125,18 +137,18 @@ export default function WorkoutSessionPage() {
     }, 700);
   };
 
-  // --- Toggle set completion (updates session state) ---
-  const handleToggleSet = async (exId: number, setId: number, completed: boolean, fallbackWeight: number, fallbackReps: number) => {
+  // --- Toggle set completion ---
+  const handleToggleSet = async (set: WorkoutSet) => {
     if (!session || session.status !== 'IN_PROGRESS') return;
-    const draft = draftLatest.current[setId];
     setSaveStatus('saving');
     try {
-      const res = await workoutApi.updateSet(session.sessionId, exId, setId, {
-        weight: draft?.weight ?? fallbackWeight,
-        reps: draft?.reps ?? fallbackReps,
-        completed: !completed,
-      });
-      setSession(res.data.data);
+      const draft = draftLatest.current[set.setId];
+      if (draft) {
+        clearTimeout(saveTimers.current[set.setId]);
+        await workoutApi.updateSet(set.setId, draft);
+      }
+      const res = await workoutApi.toggleSetComplete(set.setId);
+      replaceSet(res.data.data);
       markSaved();
     } catch {
       setSaveStatus('error');
@@ -147,13 +159,23 @@ export default function WorkoutSessionPage() {
   const handleAddSet = async (exId: number) => {
     if (!session) return;
     const exercise = session.exercises.find((e) => e.workoutExerciseId === exId);
-    const lastSet = exercise?.sets[exercise.sets.length - 1];
-    const lastId = lastSet?.workoutSetId;
-    const weight = (lastId != null ? draftLatest.current[lastId]?.weight : undefined) ?? lastSet?.weight ?? 0;
-    const reps = (lastId != null ? draftLatest.current[lastId]?.reps : undefined) ?? lastSet?.reps ?? 10;
+    if (!exercise) return;
+    const lastSet = exercise.sets[exercise.sets.length - 1];
+    const values: SetValues = lastSet
+      ? getLatestDraft(lastSet)
+      : {
+          weight: 0,
+          reps: SET_FIELDS[exercise.trackingType].includes('reps') ? 10 : 0,
+          durationSeconds: 0,
+          distanceKm: 0,
+        };
     try {
-      const res = await workoutApi.addSet(session.sessionId, exId, { weight, reps });
-      setSession(res.data.data);
+      const res = await workoutApi.addSet(exId, values);
+      setSession((prev) => prev && {
+        ...prev,
+        exercises: prev.exercises.map((ex) =>
+          ex.workoutExerciseId === exId ? { ...ex, sets: [...ex.sets, res.data.data] } : ex),
+      });
     } catch {
       alert('세트 추가에 실패했습니다.');
     }
@@ -282,12 +304,8 @@ export default function WorkoutSessionPage() {
       {/* ─── Exercise list ── */}
       <div className="px-4 space-y-3">
         {session.exercises.map((ex) => {
-          const cols     = getSetColumns(ex.trackingType);
-          const hasW     = cols.includes('weight');
-          const hasR     = cols.includes('reps');
-          const gridCls  = cols.length === 2
-            ? 'grid-cols-[32px_1fr_1fr_44px]'
-            : 'grid-cols-[32px_1fr_44px]';
+          const fields   = SET_FIELDS[ex.trackingType];
+          const gridCls  = GRID_COLS[fields.length];
           const prWeight = prMap[ex.exerciseId];
 
           return (
@@ -324,7 +342,7 @@ export default function WorkoutSessionPage() {
                             onClick={async () => {
                               setOpenMenuId(null);
                               try {
-                                await workoutApi.removeExercise(session.sessionId, ex.workoutExerciseId);
+                                await workoutApi.removeExercise(ex.workoutExerciseId);
                                 setSession((p) => p ? { ...p, exercises: p.exercises.filter((e) => e.workoutExerciseId !== ex.workoutExerciseId) } : p);
                               } catch { /* silent */ }
                             }}
@@ -343,35 +361,32 @@ export default function WorkoutSessionPage() {
                 {/* Column headers */}
                 <div className={`grid ${gridCls} gap-1 mb-1.5 px-0.5`}>
                   <span className="text-[11px] text-secondary text-center">세트</span>
-                  {hasW && <span className="text-[11px] text-secondary text-center">{colLabel('weight', ex.trackingType)}</span>}
-                  {hasR && <span className="text-[11px] text-secondary text-center">{colLabel('reps', ex.trackingType)}</span>}
+                  {fields.map((f) => (
+                    <span key={f} className="text-[11px] text-secondary text-center">{fieldLabel(f, ex.trackingType)}</span>
+                  ))}
                   <span />
                 </div>
 
                 {/* Set rows */}
                 {ex.sets.map((set) => {
-                  const w    = getWeight(set.workoutSetId, set.weight);
-                  const r    = getReps(set.workoutSetId, set.reps);
-                  const done = set.completed;
+                  const draft = getDraft(set);
+                  const done  = set.completed;
                   const inCls = `w-full text-center text-sm font-medium rounded-lg py-2 outline-none border transition-colors ${
                     done
                       ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
                       : 'bg-white border-gray-200 text-gray-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-50'
                   } ${isCompleted ? 'cursor-default' : ''}`;
                   return (
-                    <div key={set.workoutSetId} className={`grid ${gridCls} gap-1 items-center mb-1 rounded-xl px-0.5 py-1.5 ${done ? 'bg-emerald-50' : 'hover:bg-gray-50'}`}>
+                    <div key={set.setId} className={`grid ${gridCls} gap-1 items-center mb-1 rounded-xl px-0.5 py-1.5 ${done ? 'bg-emerald-50' : 'hover:bg-gray-50'}`}>
                       <span className={`text-xs font-semibold text-center ${done ? 'text-emerald-600' : 'text-secondary'}`}>{set.setOrder}</span>
-                      {hasW && (
-                        <input type="number" inputMode="decimal" className={inCls} value={w} step="0.5" disabled={isCompleted}
-                          onChange={(e) => handleSetInput(ex.workoutExerciseId, set.workoutSetId, 'weight', e.target.value, set.completed, set.weight, set.reps)} />
-                      )}
-                      {hasR && (
-                        <input type="number" inputMode="numeric" className={inCls} value={r} disabled={isCompleted}
-                          onChange={(e) => handleSetInput(ex.workoutExerciseId, set.workoutSetId, 'reps', e.target.value, set.completed, set.weight, set.reps)} />
-                      )}
+                      {fields.map((f) => (
+                        <input key={f} type="number" inputMode={f === 'reps' ? 'numeric' : 'decimal'} className={inCls}
+                          value={fieldValue(draft, f)} step={f === 'reps' ? 1 : 0.5} min={0} disabled={isCompleted}
+                          onChange={(e) => handleSetInput(set, f, e.target.value)} />
+                      ))}
                       <button
                         disabled={isCompleted}
-                        onClick={() => !isCompleted && handleToggleSet(ex.workoutExerciseId, set.workoutSetId, set.completed, set.weight, set.reps)}
+                        onClick={() => !isCompleted && handleToggleSet(set)}
                         className={`flex items-center justify-center w-9 h-9 mx-auto rounded-lg border-2 transition-colors ${
                           done ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-gray-300 text-transparent hover:border-emerald-400'
                         } ${isCompleted ? 'cursor-default' : 'cursor-pointer'}`}
