@@ -1,5 +1,5 @@
 import api from './client';
-import type { WorkoutSession, WorkoutSessionSummary, WorkoutSet } from '../types';
+import type { WorkoutExercise, WorkoutSession, WorkoutSessionSummary, WorkoutSet } from '../types';
 
 export type SetValues = Pick<WorkoutSet, 'weight' | 'reps' | 'durationSeconds' | 'distanceKm'>;
 
@@ -15,7 +15,7 @@ export const workoutApi = {
   deleteSession: (id: number) => api.delete(`/workout-sessions/${id}`),
   updateMemo: (id: number, memo: string) => api.patch<{ data: WorkoutSession }>(`/workout-sessions/${id}/memo`, { memo }),
   addExercise: (id: number, exerciseId: number) =>
-    api.post<{ data: WorkoutSession }>(`/workout-sessions/${id}/exercises`, { exerciseId }),
+    api.post<{ data: WorkoutExercise }>(`/workout-sessions/${id}/exercises`, { exerciseId }),
   removeExercise: (workoutExerciseId: number) =>
     api.delete(`/workout-exercises/${workoutExerciseId}`),
   addSet: (workoutExerciseId: number, data: SetValues) =>

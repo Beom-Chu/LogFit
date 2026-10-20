@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { exerciseApi } from '../../api/exercises';
+import { workoutApi } from '../../api/workout';
 import type { Exercise, MuscleGroup } from '../../types';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Button from '../../components/common/Button';
 import EmptyState from '../../components/common/EmptyState';
 import PageHeader from '../../components/common/PageHeader';
+
+const PAGE_SIZE = 50;
 
 const MUSCLE_GROUPS: { label: string; value: MuscleGroup | 'ALL' }[] = [
   { label: '전체',    value: 'ALL'      },
@@ -61,20 +64,32 @@ export default function ExerciseSelectPage() {
   const [muscle, setMuscle] = useState<MuscleGroup | 'ALL'>('ALL');
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(0);
+  const [hasNext, setHasNext] = useState(false);
 
-  const search = async () => {
-    setLoading(true);
+  const search = async (nextPage = 0) => {
+    const append = nextPage > 0;
+    if (append) setLoadingMore(true); else setLoading(true);
     try {
       const res = await exerciseApi.list({
         keyword: keyword || undefined,
         muscleGroup: muscle !== 'ALL' ? muscle : undefined,
-        size: 50,
+        page: nextPage,
+        size: PAGE_SIZE,
       });
-      setExercises(res.data.data.content);
+      const { content, hasNext: more } = res.data.data;
+      setExercises((prev) => (append ? [...prev, ...content] : content));
+      setPage(nextPage);
+      setHasNext(more);
     } catch {
-      setExercises([]);
+      if (!append) {
+        setExercises([]);
+        setHasNext(false);
+      }
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -87,8 +102,8 @@ export default function ExerciseSelectPage() {
   const handleSelect = async (exerciseId: number) => {
     if (!sessionId) return;
     try {
-      await exerciseApi.list(); // dummy check
-      navigate(`/workout/${sessionId}/add-exercise?exerciseId=${exerciseId}`);
+      await workoutApi.addExercise(Number(sessionId), exerciseId);
+      navigate(`/workout/${sessionId}`, { replace: true });
     } catch {
       alert('운동 추가에 실패했습니다.');
     }
@@ -150,6 +165,15 @@ export default function ExerciseSelectPage() {
                 {ex.isFavorite && <span className="text-yellow-400 text-base shrink-0">★</span>}
               </button>
             ))}
+            {hasNext && (
+              <button
+                onClick={() => search(page + 1)}
+                disabled={loadingMore}
+                className="w-full py-3 text-sm font-medium text-emerald-700 hover:bg-emerald-50 disabled:opacity-50"
+              >
+                {loadingMore ? '불러오는 중...' : '더 보기'}
+              </button>
+            )}
           </div>
         )}
       </div>

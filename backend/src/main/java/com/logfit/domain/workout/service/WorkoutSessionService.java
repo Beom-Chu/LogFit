@@ -27,13 +27,14 @@ public class WorkoutSessionService {
     @Transactional
     public WorkoutSessionResponse createSession(Long userId, CreateSessionRequest request) {
         WorkoutSessionStatus status = request.getStatus() != null ? request.getStatus() : WorkoutSessionStatus.PLANNED;
+        boolean startNow = status == WorkoutSessionStatus.IN_PROGRESS;
         WorkoutSession session = WorkoutSession.builder()
                 .userId(userId)
                 .workoutDate(request.getWorkoutDate())
-                .status(status)
+                .status(startNow ? WorkoutSessionStatus.PLANNED : status)
                 .memo(request.getMemo())
                 .build();
-        if (status == WorkoutSessionStatus.IN_PROGRESS) {
+        if (startNow) {
             session.start();
         }
         sessionRepository.save(session);

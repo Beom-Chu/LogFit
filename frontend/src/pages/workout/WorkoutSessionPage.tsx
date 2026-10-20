@@ -382,6 +382,7 @@ export default function WorkoutSessionPage() {
                       {fields.map((f) => (
                         <input key={f} type="number" inputMode={f === 'reps' ? 'numeric' : 'decimal'} className={inCls}
                           value={fieldValue(draft, f)} step={f === 'reps' ? 1 : 0.5} min={0} disabled={isCompleted}
+                          onFocus={(e) => e.target.select()}
                           onChange={(e) => handleSetInput(set, f, e.target.value)} />
                       ))}
                       <button
